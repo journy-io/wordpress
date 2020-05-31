@@ -46,7 +46,7 @@ class JournyIO {
         $this->plugin               = new stdClass;
         $this->plugin->name         = 'journy-io'; 
         $this->plugin->displayName  = 'journy.io';
-        $this->plugin->version      = '1.1.49';
+        $this->plugin->version      = '1.0.49';
         $this->plugin->folder       = plugin_dir_path( __FILE__ );
         $this->plugin->url          = plugin_dir_url( __FILE__ );
         $this->plugin->db_welcome_dismissed_key = $this->plugin->name . '_welcome_dismissed_key';

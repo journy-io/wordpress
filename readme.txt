@@ -59,7 +59,7 @@ No notes
 == Changelog ==
 
 = 1.0.49 =
-* Set default to production
+* Set default to production and change plugin version in code
 
 = 1.0.40 =
 * contact Form 7 events
