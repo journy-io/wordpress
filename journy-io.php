@@ -284,7 +284,7 @@ class JournyIO {
 	}
 
 	/**
-	* Outputs WOO Event Listener to catch WOO events
+	* Outputs WOO Event Listener to catch AJAX WOO events
 	*
 	* @return output
 	*/
