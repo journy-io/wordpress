@@ -262,7 +262,7 @@ class JournyIO {
 	function output_CF7_DOM_EventListenerToFooter() {
 		$jio_tracking_id = get_option( 'jio_tracking_ID' );
 		if ( empty( $jio_tracking_id ) || ( trim( $jio_tracking_id ) == '' ) ) {
-			return; // NO ID
+			return; // NO ID, So no tracker sippet installed
 		}
 	?>
 		<script type="text/javascript">
@@ -291,7 +291,7 @@ class JournyIO {
 	function output_WOO_DOM_EventListenerToFooter() {
 		$jio_tracking_id = get_option( 'jio_tracking_ID' );
 		if ( empty( $jio_tracking_id ) || ( trim( $jio_tracking_id ) == '' ) ) {
-			return; // NO ID
+			return; // NO ID, So no tracker sippet installed
 		}
 	?>
 		<script type="text/javascript">
