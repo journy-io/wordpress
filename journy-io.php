@@ -301,7 +301,6 @@ class JournyIO {
     	document.addEventListener( 'removed_from_cart', function( event ) {
     		journy("event", { tag: "removed-from-cart" });
     	}, false );
-    	
 		</script>
 	<?php
 	}
