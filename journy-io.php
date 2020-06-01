@@ -73,9 +73,9 @@ class JournyIO {
 		
 		// Woo Hooks
 		if ( $this->IsWooCommerced ) {
-			//add_action( 'woocommerce_after_add_to_cart_button', array( &$this, 'addToCartProcess' ) );
-			add_action( 'woocommerce_after_cart', array( $this, 'reviewCartProcess' ) );
-			add_action( 'woocommerce_after_mini_cart', array( $this, 'reviewCartProcess' ) );
+			add_action( 'woocommerce_add_to_cart', array( &$this, 'addToCartProcess' ) ); //THIS IS FOR NON-AJAX EVENTS
+			add_action( 'woocommerce_after_cart', array( &$this, 'reviewCartProcess' ) );
+			add_action( 'woocommerce_after_mini_cart', array( &$this, 'reviewCartProcess' ) );
 			add_action( 'woocommerce_thankyou', array( &$this, 'checkOutProcess' ) );
 		}
 
@@ -210,7 +210,7 @@ class JournyIO {
 			$this->output_CF7_DOM_EventListenerToFooter();
 		}
 		if ( $this->IsWooCommerced && get_option( 'jio_woo_addcart_option') ) {
-			$this->output_WOO_DOM_EventListenerToFooter();
+			$this->output_WOO_DOM_EventListenerToFooter(); // THIS IS FOR AJAX ADD-TO-CART EVENTS!!
 		}
 		
 	}
@@ -295,12 +295,10 @@ class JournyIO {
 		}
 	?>
 		<script type="text/javascript">
-		document.addEventListener( 'added_to_cart', function( event ) {
-    		journy("event", { tag: "add-to-cart" });
-    	}, false );
-    	document.addEventListener( 'removed_from_cart', function( event ) {
-    		journy("event", { tag: "removed-from-cart" });
-    	}, false );
+		jQuery(function($) {
+  			$(document.body).on('added_to_cart', function(event) { journy("event", { tag: "added-to-cart" }) })
+  			$(document.body).on('removed_from_cart', function(event) { journy("event", { tag: "removed-from-cart" }) })
+		});
 		</script>
 	<?php
 	}
@@ -313,8 +311,8 @@ class JournyIO {
 	*/
 	public function addToCartProcess( $orderID) {
 		$order = wc_get_order( $orderID );
-		//if ( get_option('jio_woo_addcart_option') )
-		//	wc_enqueue_js('journy("event", { tag: "add-to-cart" });');
+		if ( get_option('jio_woo_addcart_option') )
+			wc_enqueue_js('journy("event", { tag: "added-to-cart" });');
 	}
 
 	/**
@@ -343,5 +341,5 @@ class JournyIO {
 
 }
 
-$journyIO = new JournyIO();
+new JournyIO();
 
