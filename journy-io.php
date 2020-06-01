@@ -69,13 +69,11 @@ class JournyIO {
 		if ( $this->body_open_supported ) {
 			add_action( 'wp_body_open', array( &$this, 'frontendBody' ), 1 );
 		}
-		if ( $this->IsCF7ed ) {
-			add_action( 'wp_footer', array( &$this, 'frontendFooter' ) );
-		}
-
+		add_action( 'wp_footer', array( &$this, 'frontendFooter' ) );
+		
 		// Woo Hooks
 		if ( $this->IsWooCommerced ) {
-			add_action( 'woocommerce_after_add_to_cart_button', array( &$this, 'addToCartProcess' ) );
+			//add_action( 'woocommerce_after_add_to_cart_button', array( &$this, 'addToCartProcess' ) );
 			add_action( 'woocommerce_after_cart', array( $this, 'reviewCartProcess' ) );
 			add_action( 'woocommerce_after_mini_cart', array( $this, 'reviewCartProcess' ) );
 			add_action( 'woocommerce_thankyou', array( &$this, 'checkOutProcess' ) );
@@ -208,9 +206,13 @@ class JournyIO {
 	* Outputs script / CSS to the frontend footer
 	*/
 	function frontendFooter() {
-		if ( $this->IsCF7ed && get_option( 'jio_cf7_submit_option')) {
-			$this->outputDOMEventListenerToFooter();
+		if ( $this->IsCF7ed && get_option( 'jio_cf7_submit_option') ) {
+			$this->output_CF7_DOM_EventListenerToFooter();
 		}
+		if ( $this->IsWooCommerced && get_option( 'jio_woo_addcart_option') ) {
+			$this->output_WOO_DOM_EventListenerToFooter();
+		}
+		
 	}
 
 	/**
@@ -257,10 +259,10 @@ class JournyIO {
 	*
 	* @return output
 	*/
-	function outputDOMEventListenerToFooter() {
+	function output_CF7_DOM_EventListenerToFooter() {
 		$jio_tracking_id = get_option( 'jio_tracking_ID' );
 		if ( empty( $jio_tracking_id ) || ( trim( $jio_tracking_id ) == '' ) ) {
-			return; // staging
+			return; // NO ID
 		}
 	?>
 		<script type="text/javascript">
@@ -281,6 +283,29 @@ class JournyIO {
 	<?php
 	}
 
+	/**
+	* Outputs WOO Event Listener to catch WOO events
+	*
+	* @return output
+	*/
+	function output_WOO_DOM_EventListenerToFooter() {
+		$jio_tracking_id = get_option( 'jio_tracking_ID' );
+		if ( empty( $jio_tracking_id ) || ( trim( $jio_tracking_id ) == '' ) ) {
+			return; // NO ID
+		}
+	?>
+		<script type="text/javascript">
+		document.addEventListener( 'added_to_cart', function( event ) {
+    		journy("event", { tag: "add-to-cart" });
+    	}, false );
+    	document.addEventListener( 'removed_from_cart', function( event ) {
+    		journy("event", { tag: "removed-from-cart" });
+    	}, false );
+    	
+		</script>
+	<?php
+	}
+
 
 	/**
 	* Processes woocommerce_after_add_to_cart_button event from WooCommerce
@@ -289,8 +314,8 @@ class JournyIO {
 	*/
 	public function addToCartProcess( $orderID) {
 		$order = wc_get_order( $orderID );
-		if ( get_option('jio_woo_addcart_option') )
-			wc_enqueue_js('journy("event", { tag: "add-to-cart" });');
+		//if ( get_option('jio_woo_addcart_option') )
+		//	wc_enqueue_js('journy("event", { tag: "add-to-cart" });');
 	}
 
 	/**
