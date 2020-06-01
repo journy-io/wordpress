@@ -52,9 +52,9 @@
                                     {  echo 'WooCommerce detected: version '.$woocommerce->version.' installed';
                                     ?>
                                     </strong>
-                                    <p><label><input type="checkbox" id="jio_woo_addcart_option" name="jio_woo_addcart_option" value="<?php echo ( 'show' ); ?>" <?php if ( get_option( 'jio_woo_addcart_option', true ) === 'show') { echo 'checked'; } ?> >Track 'add to cart' event</label></p>
-                                    <p><label><input type="checkbox" id="jio_woo_reviewcart_option" name="jio_woo_reviewcart_option" value="<?php echo ( 'show' ); ?>" <?php if ( get_option( 'jio_woo_reviewcart_option', true ) === 'show') { echo 'checked'; } ?> >Track 'review cart' event</label></p>
-                                    <p><label><input type="checkbox" id="jio_woo_checkout_option" name="jio_woo_checkout_option" value="<?php echo ( 'show' ); ?>" <?php if ( get_option( 'jio_woo_checkout_option', true ) === 'show') { echo 'checked'; } ?> >Track 'checkout' event</label></p>
+                                    <p><label><input type="checkbox" id="jio_woo_addcart_option" name="jio_woo_addcart_option" value="<?php echo ( '1' ); ?>" <?php if ( get_option( 'jio_woo_addcart_option' ) === '1') { echo 'checked'; } ?> >Track 'add to cart' event</label></p>
+                                    <p><label><input type="checkbox" id="jio_woo_reviewcart_option" name="jio_woo_reviewcart_option" value="<?php echo ( '1' ); ?>" <?php if ( get_option( 'jio_woo_reviewcart_option' ) === '1') { echo 'checked'; } ?> >Track 'review cart' event</label></p>
+                                    <p><label><input type="checkbox" id="jio_woo_checkout_option" name="jio_woo_checkout_option" value="<?php echo ( '1' ); ?>" <?php if ( get_option( 'jio_woo_checkout_option' ) === '1') { echo 'checked'; } ?> >Track 'checkout' event</label></p>
                                     <strong>
                                     <?php
                                     } 
@@ -69,7 +69,7 @@
                                     {  echo 'Contact Form 7 detected: version '.WPCF7_VERSION.' installed';
                                     ?>
                                     </strong>
-                                    <p><label><input type="checkbox" id="jio_cf7_submit_option" name="jio_cf7_submit_option" value="<?php echo ( 'show' ); ?>" <?php if ( get_option( 'jio_cf7_submit_option', true ) === 'show') { echo 'checked'; } ?> >Track form submission</label></p>
+                                    <p><label><input type="checkbox" id="jio_cf7_submit_option" name="jio_cf7_submit_option" value="<?php echo ( '1' ); ?>" <?php if ( get_option( 'jio_cf7_submit_option' ) === '1') { echo 'checked'; } ?> >Track form submission</label></p>
                                     <strong>
                                     <?php
                                     } 

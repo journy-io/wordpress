@@ -8,7 +8,6 @@
 * Description: Activates and tracks Wordpress events into journy.io
 * License: GPL2
 * Text Domain: journy-io
-* Domain Path: languages
 */
 
 /*  Copyright 2020 journy.io
@@ -27,10 +26,12 @@
     Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
 
+DEFINE ('__JOURNY_DEFAULT_DOMAIN__', 'https://analytics.journy.io'); //production
+//DEFINE ('__JOURNY_DEFAULT_DOMAIN__', 'https://analytics.journy.app', true); //staging
+
 /**
 * journy-io Class
 */
-
 
 class JournyIO {
 
@@ -165,10 +166,10 @@ class JournyIO {
         $this->settings = array(
 			'jio_tracking_ID' => esc_html( wp_unslash( get_option( 'jio_tracking_ID' ) ) ),
 			'jio_tracking_URL' => esc_html( wp_unslash( get_option( 'jio_tracking_URL' ) ) ),
-			'jio_woo_addcart_option' => get_option( 'jio_woo_addcart_option', true ),
-			'jio_woo_reviewcart_option' => get_option( 'jio_woo_reviewcart_option', true ),
-			'jio_woo_checkout_option' => get_option( 'jio_woo_checkout_option', true ),
-			'jio_cf7_submit_option' => get_option( 'jio_cf7_submit_option', true ),
+			'jio_woo_addcart_option' => get_option( 'jio_woo_addcart_option', '1' ),
+			'jio_woo_reviewcart_option' => get_option( 'jio_woo_reviewcart_option', '1' ),
+			'jio_woo_checkout_option' => get_option( 'jio_woo_checkout_option', '1' ),
+			'jio_cf7_submit_option' => get_option( 'jio_cf7_submit_option', '1' ),
 
 
         );
@@ -207,7 +208,7 @@ class JournyIO {
 	* Outputs script / CSS to the frontend footer
 	*/
 	function frontendFooter() {
-		if ( $this->IsCF7ed && get_option( 'jio_cf7_submit_option', true )) {
+		if ( $this->IsCF7ed && get_option( 'jio_cf7_submit_option')) {
 			$this->outputDOMEventListenerToFooter();
 		}
 	}
@@ -229,13 +230,13 @@ class JournyIO {
 
 		// check if tracking id is set
 		if ( empty( $jio_tracking_id ) || ( trim( $jio_tracking_id ) == '' ) ) {
-			return; // staging
+			return; //NO TRACKING ID
 
 		}
 
 		// check if tracking url is set
 		if ( empty( $jio_tracking_url ) || ( trim( $jio_tracking_url ) == '' ) ) {
-			$jio_tracking_url = 'https://analytics.journy.io'; // production
+			$jio_tracking_url = __JOURNY_DEFAULT_DOMAIN__; // production
 			//$jio_tracking_url = 'https://analytics.journy.app'; // staging
 
 		}
@@ -287,7 +288,8 @@ class JournyIO {
 	* @return output
 	*/
 	public function addToCartProcess( $orderID) {
-		if ( get_option('jio_woo_addcart_option', true) )
+		$order = wc_get_order( $orderID );
+		if ( get_option('jio_woo_addcart_option') )
 			wc_enqueue_js('journy("event", { tag: "add-to-cart" });');
 	}
 
@@ -297,7 +299,8 @@ class JournyIO {
 	* @return output
 	*/
 	public function reviewCartProcess( $orderID) {
-		if ( get_option('jio_woo_reviewcart_option', true) )
+		$order = wc_get_order( $orderID );
+		if ( get_option('jio_woo_reviewcart_option') )
 			wc_enqueue_js('journy("event", { tag: "review-cart" });'); 
 	}
 
@@ -307,7 +310,8 @@ class JournyIO {
 	* @return output
 	*/
 	public function checkOutProcess( $orderID) {
-		if ( get_option('jio_woo_addcart_option', true) ) {
+		$order = wc_get_order( $orderID );
+		if ( get_option('jio_woo_checkout_option') ) {
 			wc_enqueue_js('journy("event", { tag: "check-out" });');
 			wc_enqueue_js('journy("identify", { email: "'.$order->get_billing_email().'" });');
 		}
@@ -317,18 +321,3 @@ class JournyIO {
 
 $journyIO = new JournyIO();
 
-// Activation
-function jio_plugin_activation(){
-    do_action( 'jio_default_options_trigger' );
-}
-register_activation_hook( __FILE__, 'jio_plugin_activation' );
-
-
-// Set default values here
-function jio_plugin_default_values(){
-    add_option( 'jio_woo_addcart_option', true );
-	add_option( 'jio_woo_reviewcart_option', true );
-	add_option( 'jio_woo_checkout_option', true );
-	add_option( 'jio_cf7_submit_option', true );
-}
-add_action( 'jio_default_options_trigger', 'jio_plugin_default_values' );
