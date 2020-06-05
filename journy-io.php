@@ -4,7 +4,6 @@
 * Plugin URI: https://www.journy.io/
 * Version: 1.1.49
 * Author: journy.io
-* Author URI: https://www.journy.io/
 * Description: Activates and tracks Wordpress events into journy.io
 * License: GPL2
 * Text Domain: journy-io
