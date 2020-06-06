@@ -1,6 +1,6 @@
 <?php
 /**
-* Plugin Name: journy.io Customer Intelligence Platform
+* Plugin Name: journy.io
 * Plugin URI: https://www.journy.io/
 * Version: 1.1.49
 * Author: journy.io
