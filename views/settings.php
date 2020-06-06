@@ -26,11 +26,11 @@
 	                       <div class="inside">
                             	<p>
 		                    		<p><label for="jio_tracking_ID"><strong>Tracking ID</strong></label></p>
-		                    		<input type="text" name="jio_tracking_ID" id="jio_tracking_ID" style="font-family:Courier New;" size="50" placeholder="Enter tracking ID" <?php echo 'value="'.$this->settings['jio_tracking_ID'].'"'; ?> > </input>
+		                    		<input type="text" name="jio_tracking_ID" id="jio_tracking_ID" style="font-family:Courier New;" size="50" placeholder="Enter tracking ID" <?php echo 'value="'.esc_html($this->settings['jio_tracking_ID']).'"'; ?> > </input>
 		                    	</p>
 								<p>
 		                    		<p><label for="jio_tracking_URL"><strong>Advanced Tracking URL (optional)</strong></label></p>
-		                    		<input type="text" name="jio_tracking_URL" id="jio_tracking_URL" style="font-family:Courier New;" size="50" placeholder="Enter optional tracking URL" <?php echo 'value="'.$this->settings['jio_tracking_URL'].'"'; ?> > </input>
+		                    		<input type="text" name="jio_tracking_URL" id="jio_tracking_URL" style="font-family:Courier New;" size="50" placeholder="Enter optional tracking URL" <?php echo 'value="'.esc_html($this->settings['jio_tracking_URL']).'"'; ?> > </input>
 		                    	</p>
 
 								<?php wp_nonce_field( $this->plugin->name, $this->plugin->name . '_nonce' ); ?>

@@ -25,8 +25,8 @@
     Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
 
-DEFINE ('__JOURNY_DEFAULT_DOMAIN__', 'https://analytics.journy.io'); //production
-//DEFINE ('__JOURNY_DEFAULT_DOMAIN__', 'https://analytics.journy.app', true); //staging
+DEFINE ('JOURNY_DEFAULT_DOMAIN', 'https://analytics.journy.io'); //production
+//DEFINE ('JOURNY_DEFAULT_DOMAIN', 'https://analytics.journy.app', true); //staging
 
 /**
 * journy-io Class
@@ -148,12 +148,12 @@ class JournyIO {
 	        	// Save
 				// $_REQUEST has already been slashed by wp_magic_quotes in wp-settings
 				// so do nothing before saving
-	    		update_option( 'jio_tracking_ID', $_REQUEST['jio_tracking_ID'] );
-	    		update_option( 'jio_tracking_URL', $_REQUEST['jio_tracking_URL'] );
-				update_option( 'jio_woo_addcart_option', $_REQUEST['jio_woo_addcart_option'] );
-				update_option( 'jio_woo_reviewcart_option', $_REQUEST['jio_woo_reviewcart_option'] );
-				update_option( 'jio_woo_checkout_option', $_REQUEST['jio_woo_checkout_option'] );
-				update_option( 'jio_cf7_submit_option', $_REQUEST['jio_cf7_submit_option'] );
+	    		update_option( 'jio_tracking_ID', sanitize_text_field($_REQUEST['jio_tracking_ID']) );
+	    		update_option( 'jio_tracking_URL', sanitize_text_field($_REQUEST['jio_tracking_URL']) );
+				update_option( 'jio_woo_addcart_option', sanitize_text_field($_REQUEST['jio_woo_addcart_option']) );
+				update_option( 'jio_woo_reviewcart_option', sanitize_text_field($_REQUEST['jio_woo_reviewcart_option']) );
+				update_option( 'jio_woo_checkout_option', sanitize_text_field($_REQUEST['jio_woo_checkout_option']) );
+				update_option( 'jio_cf7_submit_option', sanitize_text_field($_REQUEST['jio_cf7_submit_option']) );
 				update_option( $this->plugin->db_welcome_dismissed_key, 1 );
 				$this->message = __( 'Settings Saved.', 'journy-io' );
 			}
@@ -163,12 +163,10 @@ class JournyIO {
         $this->settings = array(
 			'jio_tracking_ID' => esc_html( wp_unslash( get_option( 'jio_tracking_ID' ) ) ),
 			'jio_tracking_URL' => esc_html( wp_unslash( get_option( 'jio_tracking_URL' ) ) ),
-			'jio_woo_addcart_option' => get_option( 'jio_woo_addcart_option', '1' ),
-			'jio_woo_reviewcart_option' => get_option( 'jio_woo_reviewcart_option', '1' ),
-			'jio_woo_checkout_option' => get_option( 'jio_woo_checkout_option', '1' ),
-			'jio_cf7_submit_option' => get_option( 'jio_cf7_submit_option', '1' ),
-
-
+			'jio_woo_addcart_option' => esc_html( wp_unslash(get_option( 'jio_woo_addcart_option', '1' ) ) ),
+			'jio_woo_reviewcart_option' => esc_html( wp_unslash(get_option( 'jio_woo_reviewcart_option', '1' ) ) ),
+			'jio_woo_checkout_option' => esc_html( wp_unslash(get_option( 'jio_woo_checkout_option', '1' ) ) ),
+			'jio_cf7_submit_option' => esc_html( wp_unslash(get_option( 'jio_cf7_submit_option', '1' ) ) ),
         );
 
     	// Load Settings Form
@@ -226,8 +224,8 @@ class JournyIO {
 		}
 
 		// Get options
-		$jio_tracking_id = get_option( 'jio_tracking_ID' );
-		$jio_tracking_url = get_option( 'jio_tracking_URL' );
+		$jio_tracking_id = esc_html(get_option( 'jio_tracking_ID' ) );
+		$jio_tracking_url = esc_html(get_option( 'jio_tracking_URL' ) );
 
 		// check if tracking id is set
 		if ( empty( $jio_tracking_id ) || ( trim( $jio_tracking_id ) == '' ) ) {
@@ -237,9 +235,7 @@ class JournyIO {
 
 		// check if tracking url is set
 		if ( empty( $jio_tracking_url ) || ( trim( $jio_tracking_url ) == '' ) ) {
-			$jio_tracking_url = __JOURNY_DEFAULT_DOMAIN__; // production
-			//$jio_tracking_url = 'https://analytics.journy.app'; // staging
-
+			$jio_tracking_url = esc_html(JOURNY_DEFAULT_DOMAIN);
 		}
 		
 		$outputTrackerString = '<script src="'.$jio_tracking_url.'/tracker.js" async></script>
@@ -259,7 +255,7 @@ class JournyIO {
 	* @return output
 	*/
 	function output_CF7_DOM_EventListenerToFooter() {
-		$jio_tracking_id = get_option( 'jio_tracking_ID' );
+		$jio_tracking_id = esc_html(get_option( 'jio_tracking_ID' ) );
 		if ( empty( $jio_tracking_id ) || ( trim( $jio_tracking_id ) == '' ) ) {
 			return; // NO ID, So no tracker sippet installed
 		}
@@ -288,7 +284,7 @@ class JournyIO {
 	* @return output
 	*/
 	function output_WOO_DOM_EventListenerToFooter() {
-		$jio_tracking_id = get_option( 'jio_tracking_ID' );
+		$jio_tracking_id = esc_html(get_option( 'jio_tracking_ID' ) );
 		if ( empty( $jio_tracking_id ) || ( trim( $jio_tracking_id ) == '' ) ) {
 			return; // NO ID, So no tracker sippet installed
 		}
@@ -310,7 +306,7 @@ class JournyIO {
 	*/
 	public function addToCartProcess( $orderID) {
 		$order = wc_get_order( $orderID );
-		if ( get_option('jio_woo_addcart_option') )
+		if ( esc_html(get_option('jio_woo_addcart_option') ) )
 			wc_enqueue_js('journy("event", { tag: "added-to-cart" });');
 	}
 
@@ -321,7 +317,7 @@ class JournyIO {
 	*/
 	public function reviewCartProcess( $orderID) {
 		$order = wc_get_order( $orderID );
-		if ( get_option('jio_woo_reviewcart_option') )
+		if ( esc_html(get_option('jio_woo_reviewcart_option') ) )
 			wc_enqueue_js('journy("event", { tag: "review-cart" });'); 
 	}
 
@@ -332,7 +328,7 @@ class JournyIO {
 	*/
 	public function checkOutProcess( $orderID) {
 		$order = wc_get_order( $orderID );
-		if ( get_option('jio_woo_checkout_option') ) {
+		if ( esc_html(get_option('jio_woo_checkout_option') ) ) {
 			wc_enqueue_js('journy("event", { tag: "check-out" });');
 			wc_enqueue_js('journy("identify", { email: "'.$order->get_billing_email().'" });');
 		}
