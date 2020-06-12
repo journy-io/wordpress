@@ -44,7 +44,11 @@ Please stay tuned as we'll be bringing visitor profiling to your wordpress site/
 
 == Screenshots ==
 
-1. Settings Screen
+1. journy.io Settings Screen, under Settings->Business Settings
+2. Wordpress Settings Screen, under settings menu
+3. Finding out which channels (Facebook, LinkedIn, Twitter...) work best to attract 'paying customers'
+4. Finding out which ads and campaigns work best to attract 'paying customers'
+5. Finding out which blog/web pages work best to attract 'paying customers'
 
 == Frequently Asked Questions ==
 
