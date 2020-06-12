@@ -240,9 +240,11 @@ class JournyIO {
 		
 		$outputTrackerString = '<script src="'.$jio_tracking_url.'/tracker.js" async></script>
 <script>
-  window.journy=window.journy||function(_,n,o){window.__journy_queue__||(window.__journy_queue__=[]),window.__journy_queue__.push({command:_,args:n,date:Date.now(),callback:o})};
-  journy("init", { trackerId: "'.$jio_tracking_id.'", domain: "'.$jio_tracking_url.'" });
-  journy("pageview");
+  if (!window.journy) {
+  	window.journy=window.journy||function(_,n,o){window.__journy_queue__||(window.__journy_queue__=[]),window.__journy_queue__.push({command:_,args:n,date:Date.now(),callback:o})};
+  	journy("init", { trackerId: "'.$jio_tracking_id.'", domain: "'.$jio_tracking_url.'" });
+  	journy("pageview");
+  }
 </script>';
 
 		// Output
@@ -261,19 +263,21 @@ class JournyIO {
 		}
 	?>
 		<script type="text/javascript">
-		document.addEventListener( 'wpcf7mailsent', function( event ) {
-    		var inputs = event.detail.inputs;
-			for ( var i = 0; i < inputs.length; i++ ) {
-				if ( inputs[i].name.match(/mail/gi) && inputs[i].value.match(/.+\@.+\..+/)) {
-					var theMail = inputs[i].value;
-				}
+			if (window.journy) {
+				document.addEventListener( 'wpcf7mailsent', function( event ) {
+    				var inputs = event.detail.inputs;
+					for ( var i = 0; i < inputs.length; i++ ) {
+						if ( inputs[i].name.match(/mail/gi) && inputs[i].value.match(/.+\@.+\..+/)) {
+							var theMail = inputs[i].value;
+						}
+					}
+					var jEventName = 'form' + event.detail.contactFormId + '_submission';
+					journy("event", { tag: jEventName });
+					if (theMail) {
+						journy("identify", { email: theMail.toLowerCase() });
+					}
+    			}, false );
 			}
-			var jEventName = 'form' + event.detail.contactFormId + '_submission';
-			journy("event", { tag: jEventName });
-			if (theMail) {
-				journy("identify", { email: theMail.toLowerCase() });
-			}
-    	}, false );
 		</script>
 	<?php
 	}
@@ -307,7 +311,7 @@ class JournyIO {
 	public function addToCartProcess( $orderID) {
 		$order = wc_get_order( $orderID );
 		if ( esc_html(get_option('jio_woo_addcart_option') ) )
-			wc_enqueue_js('journy("event", { tag: "added-to-cart" });');
+			wc_enqueue_js('if (window.journy) journy("event", { tag: "added-to-cart" });');
 	}
 
 	/**
@@ -318,7 +322,7 @@ class JournyIO {
 	public function reviewCartProcess( $orderID) {
 		$order = wc_get_order( $orderID );
 		if ( esc_html(get_option('jio_woo_reviewcart_option') ) )
-			wc_enqueue_js('journy("event", { tag: "review-cart" });'); 
+			wc_enqueue_js('if (window.journy) journy("event", { tag: "review-cart" });'); 
 	}
 
 	/**
@@ -329,8 +333,8 @@ class JournyIO {
 	public function checkOutProcess( $orderID) {
 		$order = wc_get_order( $orderID );
 		if ( esc_html(get_option('jio_woo_checkout_option') ) ) {
-			wc_enqueue_js('journy("event", { tag: "check-out" });');
-			wc_enqueue_js('journy("identify", { email: "'.$order->get_billing_email().'" });');
+			wc_enqueue_js('if (window.journy) journy("event", { tag: "check-out" });');
+			wc_enqueue_js('if (window.journy) journy("identify", { email: "'.$order->get_billing_email().'" });');
 		}
 	}
 
