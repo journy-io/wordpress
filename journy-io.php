@@ -1,15 +1,25 @@
 <?php
 /**
-* Plugin Name: journy.io
-* Plugin URI: https://www.journy.io/
-* Version: 1.1.50
-* Author: journy.io
-* Description: Activates and tracks Wordpress events into journy.io
-* License: GPL2
-* Text Domain: journy-io
-*/
+ * Plugin Name: journy.io
+ * Plugin URI: https://www.journy.io/
+ * Version: 2.0
+ * Author: journy.io
+ * Description: Activates and tracks Wordpress events into journy.io
+ * License: GPL2
+ * Text Domain: journy-io
+ */
 
-/*  Copyright 2020 journy.io
+require_once( plugin_dir_path( __FILE__ ) . '/lib/autoload.php' );
+
+if ( ! defined( 'ABSPATH' ) ) {
+	exit; // Exit if accessed directly.
+}
+
+use JournyIO\SDK\Client;
+use JournyIO\SDK\TrackingSnippet;
+
+
+/*  Copyright 2021 journy.io
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License, version 2, as
@@ -31,45 +41,51 @@ DEFINE ('JOURNY_DEFAULT_DOMAIN', 'https://analytics.journy.io'); //production
 /**
 * journy-io Class
 */
-
 class JournyIO {
 
 	public $IsWooCommerced = false;
 	public $IsCF7ed = false;
-	
+	public $IsElementor = false;
+	public $IsElementorPro = false;
+
 	/**
-	* Constructor
-	*/
+	 * Constructor
+	 */
 	public function __construct() {
 
 		// Inheritance
-        $this->plugin               = new stdClass;
-        $this->plugin->name         = 'journy-io'; 
-        $this->plugin->displayName  = 'journy.io';
-        $this->plugin->version      = '1.1.50';
-        $this->plugin->folder       = plugin_dir_path( __FILE__ );
-        $this->plugin->url          = plugin_dir_url( __FILE__ );
-        $this->plugin->db_welcome_dismissed_key = $this->plugin->name . '_welcome_dismissed_key';
-        $this->body_open_supported	= function_exists( 'wp_body_open' ) && version_compare( get_bloginfo( 'version' ), '5.2' , '>=' );
+		$this->plugin                           = new stdClass;
+		$this->plugin->name                     = 'journy-io';
+		$this->plugin->displayName              = 'journy.io';
+		$this->plugin->version                  = '2.0';
+		$this->plugin->folder                   = plugin_dir_path( __FILE__ );
+		$this->plugin->url                      = plugin_dir_url( __FILE__ );
+		$this->plugin->db_welcome_dismissed_key = $this->plugin->name . '_welcome_dismissed_key';
+		$this->body_open_supported              = function_exists( 'wp_body_open' ) && version_compare( get_bloginfo( 'version' ), '5.2', '>=' );
 
 		//Verify whether plugins are active
 		include_once( ABSPATH . 'wp-admin/includes/plugin.php' );
-		$this->IsWooCommerced = is_plugin_active( 'woocommerce/woocommerce.php');
-		$this->IsCF7ed = is_plugin_active('contact-form-7/wp-contact-form-7.php');
+		$this->IsWooCommerced = is_plugin_active( 'woocommerce/woocommerce.php' );
+		$this->IsCF7ed        = is_plugin_active( 'contact-form-7/wp-contact-form-7.php' );
+		$this->IsElementor    = is_plugin_active( 'elementor/elementor.php' );
+		$this->IsElementorPro = is_plugin_active( 'elementor-pro/elementor-pro.php' );
 
 		// Hooks
 		add_action( 'admin_init', array( &$this, 'registerSettings' ) );
-        add_action( 'admin_menu', array( &$this, 'adminPanelsAndMetaBoxes' ) );
-        add_action( 'admin_notices', array( &$this, 'dashboardNotices' ) );
-        add_action( 'wp_ajax_' . $this->plugin->name . '_dismiss_dashboard_notices', array( &$this, 'dismissDashboardNotices' ) );
+		add_action( 'admin_menu', array( &$this, 'adminPanelsAndMetaBoxes' ) );
+		add_action( 'admin_notices', array( &$this, 'dashboardNotices' ) );
+		add_action( 'wp_ajax_' . $this->plugin->name . '_dismiss_dashboard_notices', array(
+			&$this,
+			'dismissDashboardNotices'
+		) );
 
 		// Frontend Hooks
-        add_action( 'wp_head', array( &$this, 'frontendHeader' ) );
+		add_action( 'wp_head', array( &$this, 'frontendHeader' ) );
 		if ( $this->body_open_supported ) {
 			add_action( 'wp_body_open', array( &$this, 'frontendBody' ), 1 );
 		}
 		add_action( 'wp_footer', array( &$this, 'frontendFooter' ) );
-		
+
 		// Woo Hooks
 		if ( $this->IsWooCommerced ) {
 			add_action( 'woocommerce_add_to_cart', array( &$this, 'addToCartProcess' ) ); //THIS IS FOR NON-AJAX EVENTS
@@ -78,6 +94,32 @@ class JournyIO {
 			add_action( 'woocommerce_thankyou', array( &$this, 'checkOutProcess' ) );
 		}
 
+		if ( $this->IsElementor && $this->IsElementorPro ) {
+			add_action( 'elementor_pro/init', function () {
+				// Instantiate the action class
+				include_once( plugin_dir_path( __FILE__ ) . '/elementor/CustomAction.php' );
+
+				$journy_action = new CustomAction();
+
+				// Register the action with form widget
+				\ElementorPro\Plugin::instance()->modules_manager->get_modules( 'forms' )->add_form_action( $journy_action->get_name(), $journy_action );
+			} );
+		}
+
+		if ( $this->IsCF7ed ) {
+			add_action( "wpcf7_before_send_mail", function () {
+				// get the contact form object
+				$wpcf = WPCF7_ContactForm::get_current();
+
+				include_once( plugin_dir_path( __FILE__ ) . '/cf7/CustomAction.php' );
+
+				$action = new CF7CustomAction();
+
+				$action->sendData( $wpcf );
+
+				return $wpcf;
+			} );
+		}
 	}
 
     /**
@@ -109,12 +151,13 @@ class JournyIO {
 	* Register Settings
 	*/
 	function registerSettings() {
-		register_setting( $this->plugin->name, 'jio_tracking_ID', 'trim' );
-		register_setting( $this->plugin->name, 'jio_tracking_URL', 'trim' );
+		register_setting( $this->plugin->name, 'jio_api_key', 'trim' );
+		register_setting( $this->plugin->name, 'jio_snippet', 'trim' );
 		register_setting( $this->plugin->name, 'jio_woo_addcart_option', 'boolean' );
 		register_setting( $this->plugin->name, 'jio_woo_reviewcart_option', 'boolean' );
 		register_setting( $this->plugin->name, 'jio_woo_checkout_option', 'boolean' );
 		register_setting( $this->plugin->name, 'jio_cf7_submit_option', 'boolean' );
+		register_setting( $this->plugin->name, 'jio_cf7_email_ic', 'trim' );
 	}
 
 	/**
@@ -145,47 +188,81 @@ class JournyIO {
 	        	// Invalid nonce
 	        	$this->errorMessage = __( 'Invalid nonce specified. Settings NOT saved.', 'journy-io' );
         	} else {
-	        	// Save
-				// $_REQUEST has already been slashed by wp_magic_quotes in wp-settings
-				// so do nothing before saving
-	    		update_option( 'jio_tracking_ID', sanitize_text_field($_REQUEST['jio_tracking_ID']) );
-	    		update_option( 'jio_tracking_URL', sanitize_text_field($_REQUEST['jio_tracking_URL']) );
-				update_option( 'jio_woo_addcart_option', sanitize_text_field($_REQUEST['jio_woo_addcart_option']) );
-				update_option( 'jio_woo_reviewcart_option', sanitize_text_field($_REQUEST['jio_woo_reviewcart_option']) );
-				update_option( 'jio_woo_checkout_option', sanitize_text_field($_REQUEST['jio_woo_checkout_option']) );
-				update_option( 'jio_cf7_submit_option', sanitize_text_field($_REQUEST['jio_cf7_submit_option']) );
+				// Get API Key and save other settings
+				$apiKey = sanitize_text_field( $_REQUEST['jio_api_key'] );
+				update_option( 'jio_api_key', $apiKey );
+
+				if ( isset( $_REQUEST['jio_api_key'] ) ) {
+					$client = Client::withDefaults( $apiKey );
+
+					$call = $client->getTrackingSnippet( 'journy.app' ); //$_SERVER['HTTP_HOST']
+
+					if ( $call->succeeded() ) {
+						$result = $call->result();
+
+						if ( $result instanceof TrackingSnippet ) {
+							update_option( 'jio_snippet', $result->getSnippet() );
+						} else {
+							$this->errorMessage = __( 'No snippet found!', 'journy-io' );
+						}
+					} else {
+						$journyErrors = $call->errors();
+						$errors       = "";
+
+						var_dump( $journyErrors );
+
+						foreach ( $journyErrors as $key => $value ) {
+							$errors .= $value . "<br>";
+						}
+
+						$this->errorMessage = $errors;
+					}
+				}
+
+				if ( $this->IsWooCommerced ) {
+					update_option( 'jio_woo_addcart_option', sanitize_text_field( $_REQUEST['jio_woo_addcart_option'] ) );
+					update_option( 'jio_woo_reviewcart_option', sanitize_text_field( $_REQUEST['jio_woo_reviewcart_option'] ) );
+					update_option( 'jio_woo_checkout_option', sanitize_text_field( $_REQUEST['jio_woo_checkout_option'] ) );
+				}
+
+				if ( $this->IsCF7ed ) {
+					update_option( 'jio_cf7_submit_option', sanitize_text_field( $_REQUEST['jio_cf7_submit_option'] ) );
+					update_option( 'jio_cf7_email_id', sanitize_text_field( $_REQUEST['jio_cf7_email_id'] ) );
+				}
+
 				update_option( $this->plugin->db_welcome_dismissed_key, 1 );
 				$this->message = __( 'Settings Saved.', 'journy-io' );
 			}
         }
 
-        // Get latest settings
-        $this->settings = array(
-			'jio_tracking_ID' => esc_html( wp_unslash( get_option( 'jio_tracking_ID' ) ) ),
-			'jio_tracking_URL' => esc_html( wp_unslash( get_option( 'jio_tracking_URL' ) ) ),
-			'jio_woo_addcart_option' => esc_html( wp_unslash(get_option( 'jio_woo_addcart_option', '1' ) ) ),
-			'jio_woo_reviewcart_option' => esc_html( wp_unslash(get_option( 'jio_woo_reviewcart_option', '1' ) ) ),
-			'jio_woo_checkout_option' => esc_html( wp_unslash(get_option( 'jio_woo_checkout_option', '1' ) ) ),
-			'jio_cf7_submit_option' => esc_html( wp_unslash(get_option( 'jio_cf7_submit_option', '1' ) ) ),
-        );
+	    // Get latest settings
+	    $this->settings = array(
+		    'jio_api_key'               => esc_html( wp_unslash( get_option( 'jio_api_key' ) ) ),
+		    'jio_snippet'               => esc_html( wp_unslash( get_option( 'jio_snippet' ) ) ),
+		    'jio_woo_addcart_option'    => esc_html( wp_unslash( get_option( 'jio_woo_addcart_option', '1' ) ) ),
+		    'jio_woo_reviewcart_option' => esc_html( wp_unslash( get_option( 'jio_woo_reviewcart_option', '1' ) ) ),
+		    'jio_woo_checkout_option'   => esc_html( wp_unslash( get_option( 'jio_woo_checkout_option', '1' ) ) ),
+		    'jio_cf7_submit_option'     => esc_html( wp_unslash( get_option( 'jio_cf7_submit_option', '1' ) ) ),
+		    'jio_cf7_email_id'          => esc_html( wp_unslash( get_option( 'jio_cf7_email_id' ) ) ),
+	    );
 
-    	// Load Settings Form
-        include_once( $this->plugin->folder . '/views/settings.php' );
+	    // Load Settings Form
+	    include_once( $this->plugin->folder . '/views/settings.php' );
     }
 
-    /**
-	* Loads plugin textdomain
-	
-	function loadLanguageFiles() {
-		load_plugin_textdomain( 'journy-io', false, dirname( plugin_basename( __FILE__ ) ) . '/languages/' );
-	}
-	*/
+	/**
+	 * Loads plugin textdomain
+	 *
+	 * function loadLanguageFiles() {
+	 * load_plugin_textdomain( 'journy-io', false, dirname( plugin_basename( __FILE__ ) ) . '/languages/' );
+	 * }
+	 */
 
 	/**
-	* Outputs script / CSS to the frontend header
-	*/
+	 * Outputs script / CSS to the frontend header
+	 */
 	function frontendHeader() {
-		if ( !$this->body_open_supported ) {
+		if ( ! $this->body_open_supported ) {
 			$this->outputSnippet();
 		}
 	}
@@ -203,13 +280,10 @@ class JournyIO {
 	* Outputs script / CSS to the frontend footer
 	*/
 	function frontendFooter() {
-		if ( $this->IsCF7ed && get_option( 'jio_cf7_submit_option') ) {
-			$this->output_CF7_DOM_EventListenerToFooter();
-		}
 		if ( $this->IsWooCommerced && get_option( 'jio_woo_addcart_option') ) {
 			$this->output_WOO_DOM_EventListenerToFooter(); // THIS IS FOR AJAX ADD-TO-CART EVENTS!!
 		}
-		
+
 	}
 
 	/**
@@ -224,31 +298,16 @@ class JournyIO {
 		}
 
 		// Get options
-		$jio_tracking_id = esc_html(get_option( 'jio_tracking_ID' ) );
-		$jio_tracking_url = esc_html(get_option( 'jio_tracking_URL' ) );
+		$jio_snippet = get_option( 'jio_snippet' );
 
-		// check if tracking id is set
-		if ( empty( $jio_tracking_id ) || ( trim( $jio_tracking_id ) == '' ) ) {
-			return; //NO TRACKING ID
+		// check if snippet is set
+		if ( empty( $jio_snippet ) ) {
+			return; //NO SNIPPET
 
 		}
-
-		// check if tracking url is set
-		if ( empty( $jio_tracking_url ) || ( trim( $jio_tracking_url ) == '' ) ) {
-			$jio_tracking_url = esc_html(JOURNY_DEFAULT_DOMAIN);
-		}
-		
-		$outputTrackerString = '<script src="'.$jio_tracking_url.'/tracker.js" async></script>
-<script>
-  if (!window.journy) {
-  	window.journy=window.journy||function(_,n,o){window.__journy_queue__||(window.__journy_queue__=[]),window.__journy_queue__.push({command:_,args:n,date:Date.now(),callback:o})};
-  	journy("init", { trackerId: "'.$jio_tracking_id.'", domain: "'.$jio_tracking_url.'" });
-  	journy("pageview");
-  }
-</script>';
 
 		// Output
-		echo wp_unslash( $outputTrackerString );
+		echo wp_unslash( $jio_snippet );
 	}
 
 	/**
@@ -257,29 +316,29 @@ class JournyIO {
 	* @return output
 	*/
 	function output_CF7_DOM_EventListenerToFooter() {
-		$jio_tracking_id = esc_html(get_option( 'jio_tracking_ID' ) );
-		if ( empty( $jio_tracking_id ) || ( trim( $jio_tracking_id ) == '' ) ) {
-			return; // NO ID, So no tracker sippet installed
+		$jio_snippet = esc_html( get_option( '$jio_snippet' ) );
+		if ( empty( $jio_snippet ) ) {
+			return; // No tracker snippet installed
 		}
-	?>
-		<script type="text/javascript">
-			if (window.journy) {
-				document.addEventListener( 'wpcf7mailsent', function( event ) {
-    				var inputs = event.detail.inputs;
-					for ( var i = 0; i < inputs.length; i++ ) {
-						if ( inputs[i].name.match(/mail/gi) && inputs[i].value.match(/.+\@.+\..+/)) {
-							var theMail = inputs[i].value;
-						}
-					}
-					var jEventName = 'form' + event.detail.contactFormId + '_submission';
-					journy("event", { tag: jEventName });
-					if (theMail) {
-						journy("identify", { email: theMail.toLowerCase() });
-					}
-    			}, false );
-			}
-		</script>
-	<?php
+		?>
+        <script type="text/javascript">
+            if (window.journy) {
+                document.addEventListener('wpcf7mailsent', function (event) {
+                    var inputs = event.detail.inputs;
+                    for (var i = 0; i < inputs.length; i++) {
+                        if (inputs[i].name.match(/mail/gi) && inputs[i].value.match(/.+\@.+\..+/)) {
+                            var theMail = inputs[i].value;
+                        }
+                    }
+                    var jEventName = 'form' + event.detail.contactFormId + '_submission';
+                    journy("event", {tag: jEventName});
+                    if (theMail) {
+                        journy("identify", {email: theMail.toLowerCase()});
+                    }
+                }, false);
+            }
+        </script>
+		<?php
 	}
 
 	/**
@@ -288,57 +347,73 @@ class JournyIO {
 	* @return output
 	*/
 	function output_WOO_DOM_EventListenerToFooter() {
-		$jio_tracking_id = esc_html(get_option( 'jio_tracking_ID' ) );
-		if ( empty( $jio_tracking_id ) || ( trim( $jio_tracking_id ) == '' ) ) {
-			return; // NO ID, So no tracker sippet installed
+		$jio_snippet = esc_html( get_option( '$jio_snippet' ) );
+		if ( empty( $jio_snippet ) ) {
+			return; // No tracker snippet installed
 		}
-	?>
-		<script type="text/javascript">
-		jQuery(function($) {
-  			$(document.body).on('added_to_cart', function(event) { journy("event", { tag: "added-to-cart" }) })
-  			$(document.body).on('removed_from_cart', function(event) { journy("event", { tag: "removed-from-cart" }) })
-		});
-		</script>
-	<?php
-	}
-
-
-	/**
-	* Processes woocommerce_after_add_to_cart_button event from WooCommerce
-	*
-	* @return output
-	*/
-	public function addToCartProcess( $orderID) {
-		$order = wc_get_order( $orderID );
-		if ( esc_html(get_option('jio_woo_addcart_option') ) )
-			wc_enqueue_js('if (window.journy) journy("event", { tag: "added-to-cart" });');
+		?>
+        <script type="text/javascript">
+            jQuery(function ($) {
+                $(document.body).on('added_to_cart', function (event) {
+                    journy("event", {tag: "added-to-cart"})
+                })
+                $(document.body).on('removed_from_cart', function (event) {
+                    journy("event", {tag: "removed-from-cart"})
+                })
+            });
+        </script>
+		<?php
 	}
 
 	/**
-	* Processes woocommerce_after_cart and woocommerce_after_mini_cart event from WooCommerce
-	*
-	* @return output
-	*/
-	public function reviewCartProcess( $orderID) {
-		$order = wc_get_order( $orderID );
-		if ( esc_html(get_option('jio_woo_reviewcart_option') ) )
-			wc_enqueue_js('if (window.journy) journy("event", { tag: "review-cart" });'); 
+	 * Register a custom action for Elementor
+	 *
+	 */
+	public function addElementorAction() {
+		$journy_action = new Elementor_Journy_IO_Form_Action( $this );
+
+		\ElementorPro\Plugin::instance()->modules_manager->get_modules( 'forms' )->add_form_action( $journy_action->get_name(), $journy_action );
 	}
 
 	/**
-	* Processes woocommerce_thankyou event from WooCommerce
-	*
-	* @return output
-	*/
-	public function checkOutProcess( $orderID) {
+	 * Processes woocommerce_after_add_to_cart_button event from WooCommerce
+	 *
+	 * @return output
+	 */
+	public function addToCartProcess( $orderID ) {
 		$order = wc_get_order( $orderID );
-		if ( esc_html(get_option('jio_woo_checkout_option') ) ) {
-			wc_enqueue_js('if (window.journy) journy("event", { tag: "check-out" });');
-			wc_enqueue_js('if (window.journy) journy("identify", { email: "'.$order->get_billing_email().'" });');
+		if ( esc_html( get_option( 'jio_woo_addcart_option' ) ) ) {
+			wc_enqueue_js( 'if (window.journy) journy("event", { tag: "added-to-cart" });' );
+		}
+	}
+
+	/**
+	 * Processes woocommerce_after_cart and woocommerce_after_mini_cart event from WooCommerce
+	 *
+	 * @return output
+	 */
+	public function reviewCartProcess( $orderID ) {
+		$order = wc_get_order( $orderID );
+		if ( esc_html( get_option( 'jio_woo_reviewcart_option' ) ) ) {
+			wc_enqueue_js( 'if (window.journy) journy("event", { tag: "review-cart" });' );
+		}
+	}
+
+	/**
+	 * Processes woocommerce_thankyou event from WooCommerce
+	 *
+	 * @return output
+	 */
+	public function checkOutProcess( $orderID ) {
+		$order = wc_get_order( $orderID );
+		if ( esc_html( get_option( 'jio_woo_checkout_option' ) ) ) {
+			wc_enqueue_js( 'if (window.journy) journy("event", { tag: "check-out" });' );
+			wc_enqueue_js( 'if (window.journy) journy("identify", { email: "' . $order->get_billing_email() . '" });' );
 		}
 	}
 
 }
 
 new JournyIO();
+
 

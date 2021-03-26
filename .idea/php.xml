@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="PhpCodeSniffer">
+    <phpcs_settings>
+      <PhpCSConfiguration beautifier_path="$PROJECT_DIR$/vendor/bin/phpcbf" tool_path="$PROJECT_DIR$/vendor/bin/phpcs" />
+    </phpcs_settings>
+  </component>
+  <component name="PhpIncludePathManager">
+    <include_path>
+      <path value="/var/www/html/wordpress" />
+      <path value="$PROJECT_DIR$/lib/composer" />
+      <path value="$PROJECT_DIR$/lib/php-http/promise" />
+      <path value="$PROJECT_DIR$/lib/php-http/httplug" />
+      <path value="$PROJECT_DIR$/lib/php-http/message-factory" />
+      <path value="$PROJECT_DIR$/lib/symfony/deprecation-contracts" />
+      <path value="$PROJECT_DIR$/lib/psr/http-factory" />
+      <path value="$PROJECT_DIR$/lib/psr/http-message" />
+      <path value="$PROJECT_DIR$/lib/psr/http-client" />
+      <path value="$PROJECT_DIR$/lib/symfony/polyfill-php80" />
+      <path value="$PROJECT_DIR$/lib/symfony/options-resolver" />
+      <path value="$PROJECT_DIR$/lib/symfony/polyfill-php73" />
+      <path value="$PROJECT_DIR$/lib/nyholm/psr7" />
+      <path value="$PROJECT_DIR$/lib/wp-coding-standards/wpcs" />
+      <path value="$PROJECT_DIR$/lib/kriswallsmith/buzz" />
+      <path value="$PROJECT_DIR$/lib/squizlabs/php_codesniffer" />
+      <path value="$PROJECT_DIR$/lib/journy-io/sdk" />
+    </include_path>
+  </component>
+</project>

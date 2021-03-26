@@ -1,0 +1,27 @@
+{
+  "name": "journyio/wordpress",
+  "description": "Official journy.io WordPress plugin",
+  "type": "wordpress-plugin",
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "journy.io",
+      "email": "hi@journy.io"
+    }
+  ],
+  "config": {
+    "vendor-dir": "lib"
+  },
+  "require": {
+    "squizlabs/php_codesniffer": "^3.5",
+    "wp-coding-standards/wpcs": "^2.3",
+    "journy-io/sdk": "^2.0",
+    "kriswallsmith/buzz": "^1.2",
+    "nyholm/psr7": "^1.4"
+  },
+  "autoload": {
+    "psr-4": {
+      "JOURNY_IO\\": ""
+    }
+  }
+}
