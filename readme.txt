@@ -21,9 +21,9 @@ Give it a couple of visitors and buyers, and you'll quickly find out which pages
 = Features of journy.io =
 
 * Quick to set up
-* Simply insert tracking ID and optionally advanced tracking URL
-* Auto-detects the presence of <strong>WooCommerce and Contact Forms 7</strong>
-* WooCommerce: automatically tracks most important events and identify buyers.
+* Simply insert the API key
+* Auto-detects the presence of <strong>Elementor and Contact Forms 7</strong>
+* Elementor: automatically tracks form submissions and identify visitors.
 * Contact Form 7: automatically tracks form submissions and identify visitors.
 
 = Credits =
@@ -38,7 +38,7 @@ Please stay tuned as we'll be bringing visitor profiling to your wordpress site/
 
 1. Install journy.io by uploading the `journy-io` directory to the `/wp-content/plugins/` directory. (See instructions on <a href="http://www.wpbeginner.com/beginners-guide/step-by-step-guide-to-install-a-wordpress-plugin-for-beginners/" rel="friend">how to install a WordPress plugin</a>.)
 2. Activate journy.io through the `Plugins` menu in WordPress.
-3. Set up tracking ID and URL by going to the `Settings > journy.io` menu.
+3. Set up API key by going to the `Settings > journy.io` menu.
 
 [youtube https://www.youtube.com/watch?v=AXM1QgMODW0]
 
@@ -65,6 +65,7 @@ No notes
 = 2.0 =
 * Remove WooCommerce support - redo later -
 * Add support for journy.io v2
+* Add support for elementor form actions
 
 = 1.0.49 =
 * Set default to production and change plugin version in code
