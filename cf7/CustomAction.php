@@ -26,11 +26,10 @@ class CF7CustomAction {
 
 		$client->upsertUser( [
 			"email" => $posted_data[ $emailId ],
-
 			"properties" => $posted_data,
 		] );
 
 
-		$client->link( $_COOKIE["__journey"], $posted_data[ $emailId ] );
+		$client->link( $_COOKIE["__journey"], null, $posted_data[ $emailId ] );
 	}
 }

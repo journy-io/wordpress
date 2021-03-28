@@ -34,11 +34,10 @@ class CustomAction extends \ElementorPro\Modules\Forms\Classes\Action_Base {
 
 		$client->upsertUser( [
 			"email" => $fields[ $settings['journy_email_field'] ],
-
 			"properties" => $fields,
 		] );
 
-		$client->link( $_COOKIE["__journey"], $fields[ $settings['journy_email_field'] ] );
+		$client->link( $_COOKIE["__journey"], null, $fields[ $settings['journy_email_field'] ] );
 	}
 
 	public function register_settings_section( $widget ) {

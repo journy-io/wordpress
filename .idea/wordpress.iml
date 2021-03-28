@@ -1,27 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <module type="WEB_MODULE" version="4">
   <component name="NewModuleRootManager">
-    <content url="file://$MODULE_DIR$">
-      <sourceFolder url="file://$MODULE_DIR$/spec" isTestSource="true" />
-      <sourceFolder url="file://$MODULE_DIR$" isTestSource="false" packagePrefix="JOURNY_IO\" />
-      <sourceFolder url="file://$MODULE_DIR$/tests" isTestSource="true" />
-      <excludeFolder url="file://$MODULE_DIR$/lib/composer" />
-      <excludeFolder url="file://$MODULE_DIR$/lib/journy-io/sdk" />
-      <excludeFolder url="file://$MODULE_DIR$/lib/kriswallsmith/buzz" />
-      <excludeFolder url="file://$MODULE_DIR$/lib/nyholm/psr7" />
-      <excludeFolder url="file://$MODULE_DIR$/lib/php-http/httplug" />
-      <excludeFolder url="file://$MODULE_DIR$/lib/php-http/message-factory" />
-      <excludeFolder url="file://$MODULE_DIR$/lib/php-http/promise" />
-      <excludeFolder url="file://$MODULE_DIR$/lib/psr/http-client" />
-      <excludeFolder url="file://$MODULE_DIR$/lib/psr/http-factory" />
-      <excludeFolder url="file://$MODULE_DIR$/lib/psr/http-message" />
-      <excludeFolder url="file://$MODULE_DIR$/lib/squizlabs/php_codesniffer" />
-      <excludeFolder url="file://$MODULE_DIR$/lib/symfony/deprecation-contracts" />
-      <excludeFolder url="file://$MODULE_DIR$/lib/symfony/options-resolver" />
-      <excludeFolder url="file://$MODULE_DIR$/lib/symfony/polyfill-php73" />
-      <excludeFolder url="file://$MODULE_DIR$/lib/symfony/polyfill-php80" />
-      <excludeFolder url="file://$MODULE_DIR$/lib/wp-coding-standards/wpcs" />
-    </content>
+    <content url="file://$MODULE_DIR$" />
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
   </component>
