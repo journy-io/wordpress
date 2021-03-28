@@ -10,11 +10,13 @@
     }
   ],
   "config": {
-    "vendor-dir": "lib"
+    "vendor-dir": "vendor"
+  },
+  "require-dev": {
+    "squizlabs/php_codesniffer": "^3.5",
+    "wp-coding-standards/wpcs": "^2.3"
   },
   "require": {
-    "squizlabs/php_codesniffer": "^3.5",
-    "wp-coding-standards/wpcs": "^2.3",
     "journy-io/sdk": "^2.0",
     "kriswallsmith/buzz": "^1.2",
     "nyholm/psr7": "^1.4"
