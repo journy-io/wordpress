@@ -2,8 +2,8 @@
 Contributors: journyio
 Tags: marketing, attribution, optimizing, analytics, footer, footer code, footer scripts, footers, google analytics, head, header, header code, header scripts, headers, woocommerce, woocommerce analytics, contact form 7, contact form 7 analaytics
 Requires at least: 3.6
-Tested up to: 5.6
-Requires PHP: 5.2
+Tested up to: 5.7
+Requires PHP: 7.3
 Stable tag: 1.4.5
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -61,6 +61,10 @@ Unfornately not, because of the many great features, some based on AI and statis
 No notes
 
 == Changelog ==
+
+= 2.0 =
+* Remove WooCommerce support - redo later -
+* Add support for journy.io v2
 
 = 1.0.49 =
 * Set default to production and change plugin version in code
