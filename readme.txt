@@ -10,13 +10,17 @@ License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
 Empower your marketing, sales and support teams with actionable customer insights, in order to improve conversions, increase sales, and reduce churn, right within the tools they already use.
 
-This plugin allows you to track all page visits as well as Contact Form 7, Elementor and events to journy.io. journy.io will inform you which pages, ads, blog posts, marketing channels and campaigns and events most contribute to achieving your website goal. E.g. sign-up or check-out. The interface is nice-looking and easy to use and understand. Signing up with journy.io is free!
-
 == Description ==
+
+= About journy.io =
+
+Empower your marketing, sales and support teams with actionable customer insights, in order to improve conversions, increase sales, and reduce churn, right within the tools they already use.
 
 = Start with creating an account on journy.io =
 
-Creating an account on journy.io is free and easy. You'll receive a tracking ID and optionally set a tracking URL which you can insert onto your wordpress admin pannel, under settings.
+Creating an account on journy.io is free and easy.
+
+This plugin allows you to track page visits as well as Contact Form 7 or Elementor Pro form submissions in journy.io. journy.io will inform you which pages, ads, blog posts, marketing channels and campaigns and events most contribute to achieving your website goal. E.g. sign-up or check-out. The interface is nice-looking and easy to use and understand. Signing up with journy.io is free!
 
 Give it a couple of visitors and buyers, and you'll quickly find out which pages, channels, ad campaigns and others internal/external events most contribute to having your next visitors sign up or buy.
 
@@ -24,9 +28,9 @@ Give it a couple of visitors and buyers, and you'll quickly find out which pages
 
 * Quick to set up
 * Simply insert the API key
-* Auto-detects the presence of <strong>Elementor and Contact Forms 7</strong>
-* Elementor: automatically tracks form submissions and identify visitors.
-* Contact Form 7: automatically tracks form submissions and identify visitors.
+* Supports <strong>Elementor Pro and Contact Forms 7</strong>
+* Elementor Pro: Automatically tracks form submissions and identify visitors
+* Contact Form 7: Automatically tracks form submissions and identify visitors
 
 = Credits =
 
