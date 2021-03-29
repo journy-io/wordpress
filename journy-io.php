@@ -2,7 +2,7 @@
 /**
  * Plugin Name: journy.io
  * Plugin URI: https://www.journy.io/
- * Version: 2.0
+ * Version: 2.0.3
  * Author: journy.io
  * Description: Activates and tracks Wordpress events into journy.io
  * License: GPL2
