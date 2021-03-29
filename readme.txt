@@ -8,7 +8,7 @@ Stable tag: 1.4.5
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
-This plugin allows you to track all page visits as well as WooCommerce and Contact Form 7 events to journy.io. journy.io will inform you which pages, ads, blog posts, marketing channels and campaigns and events most contribute to achieving your website goal. E.g. sign-up or check-out. The interface is nice-looking and easy to use and understand. Signing up with journy.io is free!
+This plugin allows you to track all page visits as well as Contact Form 7, Elementor and events to journy.io. journy.io will inform you which pages, ads, blog posts, marketing channels and campaigns and events most contribute to achieving your website goal. E.g. sign-up or check-out. The interface is nice-looking and easy to use and understand. Signing up with journy.io is free!
 
 == Description ==
 
