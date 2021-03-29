@@ -1,8 +1,10 @@
 <?php
 
+use Elementor\Controls_Manager;
 use JournyIO\SDK\Client;
+use ElementorPro\Modules\Forms\Classes\Action_Base;
 
-class CustomAction extends \ElementorPro\Modules\Forms\Classes\Action_Base
+final class CustomAction extends Action_Base
 {
     public function get_name()
     {
@@ -36,12 +38,19 @@ class CustomAction extends \ElementorPro\Modules\Forms\Classes\Action_Base
         $apiKey = get_option('jio_api_key');
         $client = Client::withDefaults($apiKey);
 
-        $client->upsertUser([
-            "email" => $fields[$settings['journy_email_field']],
-            "properties" => $fields,
-        ]);
+        if (isset($fields[$settings['journy_email_field']])) {
+            $client->upsertUser([
+                "email" => $fields[$settings['journy_email_field']],
+                "properties" => $fields,
+            ]);
 
-        $client->link($_COOKIE["__journey"], null, $fields[$settings['journy_email_field']]);
+            if (isset($_COOKIE["__journey"])) {
+                $client->link([
+                    "deviceId" => $_COOKIE["__journey"],
+                    "email" => $fields[$settings['journy_email_field']],
+                ]);
+            }
+        }
     }
 
     public function register_settings_section($widget)
@@ -60,7 +69,7 @@ class CustomAction extends \ElementorPro\Modules\Forms\Classes\Action_Base
             'journy_email_field',
             [
                 'label' => __('Email Field ID', 'text-domain'),
-                'type' => \Elementor\Controls_Manager::TEXT,
+                'type' => Controls_Manager::TEXT,
             ]
         );
 

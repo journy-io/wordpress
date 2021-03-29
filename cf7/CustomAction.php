@@ -2,7 +2,7 @@
 
 use JournyIO\SDK\Client;
 
-class CF7CustomAction
+final class CF7CustomAction
 {
     public function sendData($wpcf)
     {
@@ -10,7 +10,7 @@ class CF7CustomAction
             return $wpcf;
         }
 
-        $submission = WPCF7_Submission:: get_instance();
+        $submission = WPCF7_Submission::get_instance();
 
         if (!$submission) {
             return $wpcf;
@@ -26,12 +26,18 @@ class CF7CustomAction
         $emailId = get_option('jio_cf7_email_id');
         $client = Client::withDefaults($apiKey);
 
-        $client->upsertUser([
-            "email" => $posted_data[$emailId],
-            "properties" => $posted_data,
-        ]);
+        if (isset($posted_data[$emailId])) {
+            $client->upsertUser([
+                "email" => $posted_data[$emailId],
+                "properties" => $posted_data,
+            ]);
 
-
-        $client->link($_COOKIE["__journey"], null, $posted_data[$emailId]);
+            if (isset($_COOKIE["__journey"])) {
+                $client->link([
+                    "deviceId" => $_COOKIE["__journey"],
+                    "email" => $posted_data[$emailId],
+                ]);
+            }
+        }
     }
 }
