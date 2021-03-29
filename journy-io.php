@@ -2,7 +2,7 @@
 /**
  * Plugin Name: journy.io
  * Plugin URI: https://www.journy.io/
- * Version: 2.0.3
+ * Version: 2.0.4
  * Author: journy.io
  * Description: Activates and tracks Wordpress events into journy.io
  * License: GPL2
@@ -15,6 +15,7 @@ if (!defined('ABSPATH')) {
     exit; // Exit if accessed directly.
 }
 
+use ElementorPro\Plugin;
 use JournyIO\SDK\Client;
 use JournyIO\SDK\TrackingSnippet;
 
@@ -35,22 +36,14 @@ use JournyIO\SDK\TrackingSnippet;
     Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
 
-/**
- * journy-io Class
- */
-class JournyIO
+final class JournyIO
 {
+    private $IsCF7ed;
+    private $IsElementor;
+    private $IsElementorPro;
 
-    public $IsCF7ed = false;
-    public $IsElementor = false;
-    public $IsElementorPro = false;
-
-    /**
-     * Constructor
-     */
     public function __construct()
     {
-
         // Inheritance
         $this->plugin = new stdClass;
         $this->plugin->name = 'journy-io';
@@ -59,10 +52,9 @@ class JournyIO
         $this->plugin->folder = plugin_dir_path(__FILE__);
         $this->plugin->url = plugin_dir_url(__FILE__);
         $this->plugin->db_welcome_dismissed_key = $this->plugin->name . '_welcome_dismissed_key';
-        $this->body_open_supported = function_exists('wp_body_open') && version_compare(get_bloginfo('version'), '5.2',
-                '>=');
+        $this->body_open_supported = function_exists('wp_body_open') && version_compare(get_bloginfo('version'), '5.2', '>=');
 
-        //Verify whether plugins are active
+        // Verify whether plugins are active
         include_once(ABSPATH . 'wp-admin/includes/plugin.php');
         $this->IsCF7ed = is_plugin_active('contact-form-7/wp-contact-form-7.php');
         $this->IsElementor = is_plugin_active('elementor/elementor.php');
@@ -92,7 +84,7 @@ class JournyIO
                 $journy_action = new CustomAction();
 
                 // Register the action with form widget
-                \ElementorPro\Plugin::instance()->modules_manager->get_modules('forms')->add_form_action($journy_action->get_name(),
+                Plugin::instance()->modules_manager->get_modules('forms')->add_form_action($journy_action->get_name(),
                     $journy_action);
             });
         }
@@ -269,7 +261,7 @@ class JournyIO
 
         // check if snippet is set
         if (empty($jio_snippet)) {
-            return; //NO SNIPPET
+            return; // NO SNIPPET
 
         }
 
@@ -286,12 +278,10 @@ class JournyIO
     {
         $journy_action = new Elementor_Journy_IO_Form_Action($this);
 
-        \ElementorPro\Plugin::instance()->modules_manager->get_modules('forms')->add_form_action($journy_action->get_name(),
+        Plugin::instance()->modules_manager->get_modules('forms')->add_form_action($journy_action->get_name(),
             $journy_action);
     }
 
 }
 
 new JournyIO();
-
-

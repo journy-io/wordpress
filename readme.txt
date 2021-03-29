@@ -8,6 +8,8 @@ Stable tag: 1.4.5
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
+Empower your marketing, sales and support teams with actionable customer insights, in order to improve conversions, increase sales, and reduce churn, right within the tools they already use.
+
 This plugin allows you to track all page visits as well as Contact Form 7, Elementor and events to journy.io. journy.io will inform you which pages, ads, blog posts, marketing channels and campaigns and events most contribute to achieving your website goal. E.g. sign-up or check-out. The interface is nice-looking and easy to use and understand. Signing up with journy.io is free!
 
 == Description ==
@@ -54,7 +56,7 @@ Please stay tuned as we'll be bringing visitor profiling to your wordpress site/
 
 = Can we use journy.io WITHOUT making an account first? =
 
-Unfornately not, because of the many great features, some based on AI and statistical data-driven attribution, we have to use our own dedicated platform. But it's free, so it's not that bad!
+Unfortunately not, because of the many great features, some based on AI and statistical data-driven attribution, we have to use our own dedicated platform. But it's free, so it's not that bad!
 
 == Notes ==
 
