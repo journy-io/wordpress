@@ -1,0 +1,30 @@
+# Directories
+/.git
+/.github
+/.wordpress-org
+/bin
+/node_modules
+/tests
+# DO NOT EXCLUDE /vendor
+
+# Files
+.babelrc
+.distignore
+.eslintignore
+.eslintrc.json
+.gitignore
+CHANGELOG.md
+CODE_OF_CONDUCT.md
+composer.json
+composer.lock
+CONTRIBUTING.md
+CREDITS.md
+LICENSE.md
+package.json
+package-lock.json
+phpcs.xml
+phpunit.xml
+README.md
+webpack.config.js
+webpack.gutenberg.config.js
+wpacceptance.json
