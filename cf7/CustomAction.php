@@ -1,6 +1,8 @@
 <?php
 
 use JournyIO\SDK\Client;
+use JournyIO\SDK\Event;
+use JournyIO\SDK\UserIdentified;
 
 final class CF7CustomAction
 {
@@ -10,6 +12,7 @@ final class CF7CustomAction
             return $wpcf;
         }
 
+        $formId = $wpcf->id();
         $submission = WPCF7_Submission::get_instance();
 
         if (!$submission) {
@@ -18,7 +21,7 @@ final class CF7CustomAction
 
         $posted_data = $submission->get_posted_data();
 
-        if (empty ($posted_data)) {
+        if (empty($posted_data)) {
             return $wpcf;
         }
 
@@ -27,17 +30,25 @@ final class CF7CustomAction
         $client = Client::withDefaults($apiKey);
 
         if (isset($posted_data[$emailId])) {
+            $email = $posted_data[$emailId];
+
             $client->upsertUser([
-                "email" => $posted_data[$emailId],
-                "properties" => $posted_data,
+                "email" => $email,
             ]);
 
             if (isset($_COOKIE["__journey"])) {
                 $client->link([
                     "deviceId" => $_COOKIE["__journey"],
-                    "email" => $posted_data[$emailId],
+                    "email" => $email,
                 ]);
             }
+
+            $client->addEvent(
+                Event::forUser(
+                    $formId,
+                    UserIdentified::byEmail($posted_data[$emailId])
+                )->withMetadata($posted_data)
+            );
         }
     }
 }

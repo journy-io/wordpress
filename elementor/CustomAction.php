@@ -3,6 +3,8 @@
 use Elementor\Controls_Manager;
 use JournyIO\SDK\Client;
 use ElementorPro\Modules\Forms\Classes\Action_Base;
+use JournyIO\SDK\Event;
+use JournyIO\SDK\UserIdentified;
 
 final class CustomAction extends Action_Base
 {
@@ -14,6 +16,16 @@ final class CustomAction extends Action_Base
     public function get_label()
     {
         return __('journy.io', 'journy-io');
+    }
+
+    private function snake($value, $delimiter = '_') {
+        if (! ctype_lower($value)) {
+            $value = preg_replace('/\s+/u', '', ucwords($value));
+
+            $value = mb_strtolower(preg_replace('/(.)(?=[A-Z])/u', '$1'.$delimiter, $value), 'UTF-8');
+        }
+
+        return $value;
     }
 
     public function run($record, $ajax_handler)
@@ -39,17 +51,30 @@ final class CustomAction extends Action_Base
         $client = Client::withDefaults($apiKey);
 
         if (isset($fields[$settings['journy_email_field']])) {
+            $email = $fields[$settings['journy_email_field']];
+
             $client->upsertUser([
-                "email" => $fields[$settings['journy_email_field']],
-                "properties" => $fields,
+                "email" => $email,
             ]);
 
             if (isset($_COOKIE["__journey"])) {
                 $client->link([
                     "deviceId" => $_COOKIE["__journey"],
-                    "email" => $fields[$settings['journy_email_field']],
+                    "email" => $email,
                 ]);
             }
+
+            $metadata = [];
+            foreach ($raw_fields as $id => $field) {
+                $metadata[$this->snake($field['title'])] = $field['value'];
+            }
+
+            $client->addEvent(
+                Event::forUser(
+                    $settings["id"],
+                    UserIdentified::byEmail($email)
+                )->withMetadata($metadata)
+            );
         }
     }
 
