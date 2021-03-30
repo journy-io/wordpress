@@ -40,27 +40,27 @@ final class CF7CustomAction
 		    }
 	    }
 
-	    if ( isset( $posted_data[ $firstNameId ] ) ) {
+	    if ( !empty( $posted_data[ $firstNameId ] ) ) {
 		    $properties["first_name"] = $posted_data[ $firstNameId ];
 	    }
 
-	    if ( isset( $posted_data[ $lastNameId ] ) ) {
+	    if ( !empty( $posted_data[ $lastNameId ] ) ) {
 		    $properties["last_name"] = $posted_data[ $lastNameId ];
 	    }
 
-	    if ( isset( $posted_data[ $fullNameId ] ) ) {
+	    if ( !empty( $posted_data[ $fullNameId ] ) ) {
 		    $properties["full_name"] = $posted_data[ $fullNameId ];
 	    }
 
-	    if ( empty( $properties["first_name"] ) && isset( $posted_data["first_name"] ) ) {
+	    if ( empty( $properties["first_name"] ) && !empty( $posted_data["first_name"] ) ) {
 		    $properties["first_name"] = $posted_data["first_name"];
 	    }
 
-	    if ( empty( $properties["last_name"] ) && isset( $posted_data["last_name"] ) ) {
+	    if ( empty( $properties["last_name"] ) && !empty( $posted_data["last_name"] ) ) {
 		    $properties["last_name"] = $posted_data["last_name"];
 	    }
 
-	    if ( empty( $properties["full_name"] ) && isset( $posted_data["full_name"] ) ) {
+	    if ( empty( $properties["full_name"] ) && !empty( $posted_data["full_name"] ) ) {
 		    $properties["full_name"] = $posted_data["full_name"];
 	    }
 

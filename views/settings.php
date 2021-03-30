@@ -56,31 +56,39 @@
 			                            echo 'checked';
 		                            } ?> >Track form submission</label>
                                 <br>
+                                <br>
                                 <label>Email Field ID</label>
+                                <br>
                                 <input type="text" name="jio_cf7_email_id" id="jio_cf7_email_id"
-                                       style="font-family:Courier New;"
+                                       style="font-family:Courier New; margin-top: 5px"
                                        size="50"
                                        placeholder="Email Field ID" <?php echo 'value="' . esc_html( $this->settings['jio_cf7_email_id'] ) . '"'; ?> >
 
                                 <br>
+                                <br>
                                 <label>First Name Field ID</label>
+                                <br>
                                 <input type="text" name="jio_cf7_first_name_id" id="jio_cf7_first_name_id"
-                                       style="font-family:Courier New;"
+                                       style="font-family:Courier New; margin-top: 5px"
                                        size="50"
                                        placeholder="First Name Field ID" <?php echo 'value="' . esc_html( $this->settings['jio_cf7_first_name_id'] ) . '"'; ?> >
 
                                 <br>
+                                <br>
                                 <label>Last Name Field ID</label>
+                                <br>
                                 <input type="text" name="jio_cf7_last_name_id" id="jio_cf7_last_name_id"
-                                       style="font-family:Courier New;"
+                                       style="font-family:Courier New; margin-top: 5px"
                                        size="50"
                                        placeholder="Last Name Field ID" <?php echo 'value="' . esc_html( $this->settings['jio_cf7_last_name_id'] ) . '"'; ?> >
 
 
                                 <br>
+                                <br>
                                 <label>Full Name Field ID</label>
+                                <br>
                                 <input type="text" name="jio_cf7_full_name_id" id="jio_cf7_full_name_id"
-                                       style="font-family:Courier New;"
+                                       style="font-family:Courier New; margin-top: 5px"
                                        size="50"
                                        placeholder="Full Name Field ID" <?php echo 'value="' . esc_html( $this->settings['jio_cf7_full_name_id'] ) . '"'; ?> >
 

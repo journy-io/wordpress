@@ -32,20 +32,20 @@ final class CustomAction extends Action_Base {
 		$lastNameSetting  = "last_name";
 		$fullNameSetting  = "full_name";
 
-		if ( isset( $settings['journy_email_field'] ) ) {
+		if ( !empty( $settings['journy_email_field'] ) ) {
 			$emailSetting = $settings['journy_email_field'];
 		}
 
-		if ( isset( $settings['journy_first_name'] ) ) {
+		if ( !empty( $settings['journy_first_name'] ) ) {
 			$firstNameSetting = $settings['journy_first_name'];
 		}
 
-		if ( isset( $settings['journy_last_name'] ) ) {
+		if ( !empty( $settings['journy_last_name'] ) ) {
 			$lastNameSetting = $settings['journy_last_name'];
 		}
 
-		if ( isset( $settings['journy_full_name'] ) ) {
-			$lastNameSetting = $settings['journy_full_name'];
+		if ( !empty( $settings['journy_full_name'] ) ) {
+			$fullNameSetting = $settings['journy_full_name'];
 		}
 
 		$raw_fields = $record->get( 'fields' );
@@ -67,21 +67,21 @@ final class CustomAction extends Action_Base {
 			return;
 		}
 
-		if ( isset( $fields[ $emailSetting ] ) ) {
+		if ( !empty( $fields[ $emailSetting ] ) ) {
 			$email = $fields[ $emailSetting ];
 		}
 
 		$properties = [];
 
-		if ( isset( $fields[ $firstNameSetting ] ) ) {
+		if ( !empty( $fields[ $firstNameSetting ] ) ) {
 			$properties["first_name"] = $fields[ $firstNameSetting ];
 		}
 
-		if ( isset( $fields[ $lastNameSetting ] ) ) {
+		if ( !empty( $fields[ $lastNameSetting ] ) ) {
 			$properties["last_name"] = $fields[ $lastNameSetting ];
 		}
 
-		if ( isset( $fields[ $fullNameSetting ] ) ) {
+		if ( !empty( $fields[ $fullNameSetting ] ) ) {
 			$properties["full_name"] = $fields[ $fullNameSetting ];
 		}
 
