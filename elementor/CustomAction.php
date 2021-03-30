@@ -85,18 +85,6 @@ final class CustomAction extends Action_Base {
 			$properties["full_name"] = $fields[ $fullNameSetting ];
 		}
 
-		$client->upsertUser( [
-			"email"      => $email,
-			"properties" => $properties,
-		] );
-
-		if ( isset( $_COOKIE["__journey"] ) ) {
-			$client->link( [
-				"deviceId" => $_COOKIE["__journey"],
-				"email"    => $email,
-			] );
-		}
-
 		$metadata = [];
 		foreach ( $raw_fields as $id => $field ) {
 			if ( $id === $emailSetting ) {
@@ -112,6 +100,19 @@ final class CustomAction extends Action_Base {
 			}
 
 			$metadata[ $this->snake( $field['title'] ) ] = $field['value'];
+			$properties[ $this->snake( $field['title'] ) ] = $field['value'];
+		}
+
+		$client->upsertUser( [
+			"email"      => $email,
+			"properties" => $properties,
+		] );
+
+		if ( isset( $_COOKIE["__journey"] ) ) {
+			$client->link( [
+				"deviceId" => $_COOKIE["__journey"],
+				"email"    => $email,
+			] );
 		}
 
 		$client->addEvent(
@@ -179,7 +180,8 @@ final class CustomAction extends Action_Base {
         unset(
             $element['journy_email_field'],
             $element['journy_first_name'],
-            $element['journy_last_name']
+            $element['journy_last_name'],
+	        $element['journy_full_name']
         );
     }
 }
