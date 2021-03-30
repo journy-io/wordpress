@@ -85,7 +85,7 @@ final class CF7CustomAction
 			    ] );
 		    }
 
-		    $metedata = [];
+            $metadata = [];
 
 		    foreach ( $posted_data as $id => $value ) {
 			    if (
@@ -100,14 +100,14 @@ final class CF7CustomAction
 				    continue;
 			    }
 
-			    $metadata[ $id ] = $value;
+                $metadata[ $id ] = $value;
 		    }
 
 		    $client->addEvent(
 			    Event::forUser(
 				    'form' . $formId . '_submit',
 				    UserIdentified::byEmail( $email )
-			    )->withMetadata( $metedata )
+			    )->withMetadata( $metadata )
 		    );
 	    }
 
