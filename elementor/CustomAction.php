@@ -52,9 +52,19 @@ final class CustomAction extends Action_Base
 
         if (isset($fields[$settings['journy_email_field']])) {
             $email = $fields[$settings['journy_email_field']];
+            $properties = [];
+
+            if (isset($fields[$settings['journy_first_name']])) {
+                $properties["first_name"] = $fields[$settings['journy_first_name']];
+            }
+
+            if (isset($fields[$settings['journy_last_name']])) {
+                $properties["last_name"] = $fields[$settings['journy_last_name']];
+            }
 
             $client->upsertUser([
                 "email" => $email,
+                "properties" => $properties,
             ]);
 
             if (isset($_COOKIE["__journey"])) {
@@ -66,6 +76,17 @@ final class CustomAction extends Action_Base
 
             $metadata = [];
             foreach ($raw_fields as $id => $field) {
+                if ($id === $settings['journy_email_field']) {
+                    continue;
+                }
+
+                if (
+                    (isset($settings['journy_first_name']) && $id === $settings['journy_first_name'])
+                    || (isset($settings['journy_last_name']) && $id === $settings['journy_last_name'])
+                ) {
+                    continue;
+                }
+
                 $metadata[$this->snake($field['title'])] = $field['value'];
             }
 
@@ -98,13 +119,31 @@ final class CustomAction extends Action_Base
             ]
         );
 
+        $widget->add_control(
+            'journy_first_name',
+            [
+                'label' => __('First Name Field ID', 'text-domain'),
+                'type' => Controls_Manager::TEXT,
+            ]
+        );
+
+        $widget->add_control(
+            'journy_last_name',
+            [
+                'label' => __('Last Name Field ID', 'text-domain'),
+                'type' => Controls_Manager::TEXT,
+            ]
+        );
+
         $widget->end_controls_section();
     }
 
     public function on_export($element)
     {
         unset(
-            $element['journy_email_field']
+            $element['journy_email_field'],
+            $element['journy_first_name'],
+            $element['journy_last_name'],
         );
     }
 }
