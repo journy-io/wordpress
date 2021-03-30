@@ -52,17 +52,40 @@
                                     </strong>
                                 </p><label><input type="checkbox" id="jio_cf7_submit_option"
                                                   name="jio_cf7_submit_option"
-                                                  value="<?php echo('1'); ?>" <?php if (get_option('jio_cf7_submit_option') === '1') {
-                                        echo 'checked';
-                                    } ?> >Track form submission</label>
-
+                                                  value="<?php echo( '1' ); ?>" <?php if ( get_option( 'jio_cf7_submit_option' ) === '1' ) {
+			                            echo 'checked';
+		                            } ?> >Track form submission</label>
+                                <br>
+                                <label>Email Field ID</label>
                                 <input type="text" name="jio_cf7_email_id" id="jio_cf7_email_id"
                                        style="font-family:Courier New;"
                                        size="50"
-                                       placeholder="Email ID" <?php echo 'value="' . esc_html($this->settings['jio_cf7_email_id']) . '"'; ?> >
+                                       placeholder="Email Field ID" <?php echo 'value="' . esc_html( $this->settings['jio_cf7_email_id'] ) . '"'; ?> >
 
-                                <?php
-                                }
+                                <br>
+                                <label>First Name Field ID</label>
+                                <input type="text" name="jio_cf7_first_name_id" id="jio_cf7_first_name_id"
+                                       style="font-family:Courier New;"
+                                       size="50"
+                                       placeholder="First Name Field ID" <?php echo 'value="' . esc_html( $this->settings['jio_cf7_first_name_id'] ) . '"'; ?> >
+
+                                <br>
+                                <label>Last Name Field ID</label>
+                                <input type="text" name="jio_cf7_last_name_id" id="jio_cf7_last_name_id"
+                                       style="font-family:Courier New;"
+                                       size="50"
+                                       placeholder="Last Name Field ID" <?php echo 'value="' . esc_html( $this->settings['jio_cf7_last_name_id'] ) . '"'; ?> >
+
+
+                                <br>
+                                <label>Full Name Field ID</label>
+                                <input type="text" name="jio_cf7_full_name_id" id="jio_cf7_full_name_id"
+                                       style="font-family:Courier New;"
+                                       size="50"
+                                       placeholder="Full Name Field ID" <?php echo 'value="' . esc_html( $this->settings['jio_cf7_full_name_id'] ) . '"'; ?> >
+
+	                            <?php
+	                            }
                                 ?>
                                 <p><strong>
                                         <?php global $elementor;

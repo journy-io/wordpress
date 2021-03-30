@@ -1,103 +1,127 @@
 <?php
 
 use Elementor\Controls_Manager;
-use JournyIO\SDK\Client;
 use ElementorPro\Modules\Forms\Classes\Action_Base;
+use JournyIO\SDK\Client;
 use JournyIO\SDK\Event;
 use JournyIO\SDK\UserIdentified;
 
-final class CustomAction extends Action_Base
-{
-    public function get_name()
-    {
-        return "journy.io";
-    }
+final class CustomAction extends Action_Base {
+	public function get_name() {
+		return "journy.io";
+	}
 
-    public function get_label()
-    {
-        return __('journy.io', 'journy-io');
-    }
+	public function get_label() {
+		return __( 'journy.io', 'journy-io' );
+	}
 
-    private function snake($value, $delimiter = '_') {
-        if (! ctype_lower($value)) {
-            $value = preg_replace('/\s+/u', '', ucwords($value));
+	private function snake( $value, $delimiter = '_' ) {
+		if ( ! ctype_lower( $value ) ) {
+			$value = preg_replace( '/\s+/u', '', ucwords( $value ) );
 
-            $value = mb_strtolower(preg_replace('/(.)(?=[A-Z])/u', '$1'.$delimiter, $value), 'UTF-8');
-        }
+			$value = strtolower( preg_replace( '/(.)(?=[A-Z])/u', '$1' . $delimiter, $value ) );
+		}
 
-        return $value;
-    }
+		return $value;
+	}
 
-    public function run($record, $ajax_handler)
-    {
-        $settings = $record->get('form_settings');
+	public function run( $record, $ajax_handler ) {
+		$settings         = $record->get( 'form_settings' );
+		$emailSetting     = "email";
+		$firstNameSetting = "first_name";
+		$lastNameSetting  = "last_name";
+		$fullNameSetting  = "full_name";
 
-        if (empty($settings['journy_email_field'])) {
-            return;
-        }
+		if ( isset( $settings['journy_email_field'] ) ) {
+			$emailSetting = $settings['journy_email_field'];
+		}
 
-        $raw_fields = $record->get('fields');
+		if ( isset( $settings['journy_first_name'] ) ) {
+			$firstNameSetting = $settings['journy_first_name'];
+		}
 
-        $fields = [];
-        foreach ($raw_fields as $id => $field) {
-            $fields[$id] = $field['value'];
-        }
+		if ( isset( $settings['journy_last_name'] ) ) {
+			$lastNameSetting = $settings['journy_last_name'];
+		}
 
-        if (empty($fields[$settings['journy_email_field']])) {
-            return;
-        }
+		if ( isset( $settings['journy_full_name'] ) ) {
+			$lastNameSetting = $settings['journy_full_name'];
+		}
 
-        $apiKey = get_option('jio_api_key');
-        $client = Client::withDefaults($apiKey);
+		$raw_fields = $record->get( 'fields' );
 
-        if (isset($fields[$settings['journy_email_field']])) {
-            $email = $fields[$settings['journy_email_field']];
-            $properties = [];
+		$fields = [];
+		$email  = "";
+		foreach ( $raw_fields as $id => $field ) {
+			$fields[ $id ] = $field['value'];
 
-            if (isset($fields[$settings['journy_first_name']])) {
-                $properties["first_name"] = $fields[$settings['journy_first_name']];
-            }
+			if ( $field['type'] === 'email' ) {
+				$email = $field['value'];
+			}
+		}
 
-            if (isset($fields[$settings['journy_last_name']])) {
-                $properties["last_name"] = $fields[$settings['journy_last_name']];
-            }
+		$apiKey = get_option( 'jio_api_key' );
+		$client = Client::withDefaults( $apiKey );
 
-            $client->upsertUser([
-                "email" => $email,
-                "properties" => $properties,
-            ]);
+		if ( empty( $email ) && empty( $fields[ $emailSetting ] ) ) {
+			return;
+		}
 
-            if (isset($_COOKIE["__journey"])) {
-                $client->link([
-                    "deviceId" => $_COOKIE["__journey"],
-                    "email" => $email,
-                ]);
-            }
+		if ( isset( $fields[ $emailSetting ] ) ) {
+			$email = $fields[ $emailSetting ];
+		}
 
-            $metadata = [];
-            foreach ($raw_fields as $id => $field) {
-                if ($id === $settings['journy_email_field']) {
-                    continue;
-                }
+		$properties = [];
 
-                if (
-                    (isset($settings['journy_first_name']) && $id === $settings['journy_first_name'])
-                    || (isset($settings['journy_last_name']) && $id === $settings['journy_last_name'])
-                ) {
-                    continue;
-                }
+		if ( isset( $fields[ $firstNameSetting ] ) ) {
+			$properties["first_name"] = $fields[ $firstNameSetting ];
+		}
 
-                $metadata[$this->snake($field['title'])] = $field['value'];
-            }
+		if ( isset( $fields[ $lastNameSetting ] ) ) {
+			$properties["last_name"] = $fields[ $lastNameSetting ];
+		}
 
-            $client->addEvent(
-                Event::forUser(
-                    $settings["id"],
-                    UserIdentified::byEmail($email)
-                )->withMetadata($metadata)
-            );
-        }
-    }
+		if ( isset( $fields[ $fullNameSetting ] ) ) {
+			$properties["full_name"] = $fields[ $fullNameSetting ];
+		}
+
+		$client->upsertUser( [
+			"email"      => $email,
+			"properties" => $properties,
+		] );
+
+		if ( isset( $_COOKIE["__journey"] ) ) {
+			$client->link( [
+				"deviceId" => $_COOKIE["__journey"],
+				"email"    => $email,
+			] );
+		}
+
+		$metadata = [];
+		foreach ( $raw_fields as $id => $field ) {
+			if ( $id === $emailSetting ) {
+				continue;
+			}
+
+			if (
+				$id === $firstNameSetting
+				|| $id === $lastNameSetting
+				|| $id === $fullNameSetting
+			) {
+				continue;
+			}
+
+			$metadata[ $this->snake( $field['title'] ) ] = $field['value'];
+		}
+
+		$client->addEvent(
+			Event::forUser(
+				'form' . $settings["id"] . '-submit',
+				UserIdentified::byEmail( $email )
+			)->withMetadata( $metadata )
+		);
+
+	}
 
     public function register_settings_section($widget)
     {
@@ -112,30 +136,42 @@ final class CustomAction extends Action_Base
         );
 
         $widget->add_control(
-            'journy_email_field',
-            [
-                'label' => __('Email Field ID', 'text-domain'),
-                'type' => Controls_Manager::TEXT,
-            ]
+	        'journy_email_field',
+	        [
+		        'label'   => __( 'Email Field ID', 'text-domain' ),
+		        'type'    => Controls_Manager::TEXT,
+		        'default' => 'email'
+	        ]
         );
 
         $widget->add_control(
-            'journy_first_name',
-            [
-                'label' => __('First Name Field ID', 'text-domain'),
-                'type' => Controls_Manager::TEXT,
-            ]
+	        'journy_first_name',
+	        [
+		        'label'   => __( 'First Name Field ID', 'text-domain' ),
+		        'type'    => Controls_Manager::TEXT,
+		        'default' => 'first_name'
+	        ]
         );
 
-        $widget->add_control(
-            'journy_last_name',
-            [
-                'label' => __('Last Name Field ID', 'text-domain'),
-                'type' => Controls_Manager::TEXT,
-            ]
-        );
+	    $widget->add_control(
+		    'journy_last_name',
+		    [
+			    'label'   => __( 'Last Name Field ID', 'text-domain' ),
+			    'type'    => Controls_Manager::TEXT,
+			    'default' => 'last_name'
+		    ]
+	    );
 
-        $widget->end_controls_section();
+	    $widget->add_control(
+		    'journy_full_name',
+		    [
+			    'label'   => __( 'Full Name Field ID', 'text-domain' ),
+			    'type'    => Controls_Manager::TEXT,
+			    'default' => 'full_name'
+		    ]
+	    );
+
+	    $widget->end_controls_section();
     }
 
     public function on_export($element)
