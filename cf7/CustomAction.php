@@ -73,18 +73,6 @@ final class CF7CustomAction
 	    }
 
 	    if ( isset( $email ) ) {
-		    $client->upsertUser( [
-			    "email"      => $email,
-			    "properties" => $properties,
-		    ] );
-
-		    if ( isset( $_COOKIE["__journey"] ) ) {
-			    $client->link( [
-				    "deviceId" => $_COOKIE["__journey"],
-				    "email"    => $email,
-			    ] );
-		    }
-
             $metadata = [];
 
 		    foreach ( $posted_data as $id => $value ) {
@@ -101,6 +89,19 @@ final class CF7CustomAction
 			    }
 
                 $metadata[ $id ] = $value;
+			    $properties[ $id ] = $value;
+		    }
+
+		    $client->upsertUser( [
+			    "email"      => $email,
+			    "properties" => $properties,
+		    ] );
+
+		    if ( isset( $_COOKIE["__journey"] ) ) {
+			    $client->link( [
+				    "deviceId" => $_COOKIE["__journey"],
+				    "email"    => $email,
+			    ] );
 		    }
 
 		    $client->addEvent(
