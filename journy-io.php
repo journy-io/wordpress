@@ -2,7 +2,7 @@
 /**
  * Plugin Name: journy.io
  * Plugin URI: https://www.journy.io/
- * Version: 2.0.10
+ * Version: 2.0.11
  * Author: journy.io
  * Description: Activates and tracks Wordpress events into journy.io
  * License: GPL2
@@ -136,10 +136,15 @@ final class JournyIO
      */
     function registerSettings()
     {
-        register_setting($this->plugin->name, 'jio_api_key', 'trim');
-        register_setting($this->plugin->name, 'jio_snippet', 'trim');
-        register_setting($this->plugin->name, 'jio_cf7_submit_option', 'boolean');
-        register_setting($this->plugin->name, 'jio_cf7_email_ic', 'trim');
+	    register_setting( $this->plugin->name, 'jio_api_key', 'trim' );
+	    register_setting( $this->plugin->name, 'jio_snippet', 'trim' );
+	    register_setting( $this->plugin->name, 'jio_cf7_submit_option', 'boolean' );
+	    register_setting( $this->plugin->name, 'jio_cf7_email_id', [ 'type' => 'trim', 'default' => 'your-email' ] );
+	    register_setting( $this->plugin->name, 'jio_cf7_first_name_id', [ 'type'    => 'trim',
+	                                                                      'default' => 'first_name'
+	    ] );
+	    register_setting( $this->plugin->name, 'jio_cf7_last_name_id', [ 'type' => 'trim', 'default' => 'last_name' ] );
+	    register_setting( $this->plugin->name, 'jio_cf7_full_name_id', [ 'type' => 'trim', 'default' => 'your-name' ] );
     }
 
     /**
@@ -203,8 +208,11 @@ final class JournyIO
                 }
 
                 if ($this->IsCF7ed) {
-                    update_option('jio_cf7_submit_option', sanitize_text_field($_REQUEST['jio_cf7_submit_option']));
-                    update_option('jio_cf7_email_id', sanitize_text_field($_REQUEST['jio_cf7_email_id']));
+	                update_option( 'jio_cf7_submit_option', sanitize_text_field( $_REQUEST['jio_cf7_submit_option'] ) );
+	                update_option( 'jio_cf7_email_id', sanitize_text_field( $_REQUEST['jio_cf7_email_id'] ) );
+	                update_option( 'jio_cf7_first_name_id', sanitize_text_field( $_REQUEST['jio_cf7_first_name_id'] ) );
+	                update_option( 'jio_cf7_last_name_id', sanitize_text_field( $_REQUEST['jio_cf7_last_name_id'] ) );
+	                update_option( 'jio_cf7_full_name_id', sanitize_text_field( $_REQUEST['jio_cf7_full_name_id'] ) );
                 }
 
                 update_option($this->plugin->db_welcome_dismissed_key, 1);
@@ -214,10 +222,13 @@ final class JournyIO
 
         // Get latest settings
         $this->settings = array(
-            'jio_api_key' => esc_html(wp_unslash(get_option('jio_api_key'))),
-            'jio_snippet' => esc_html(wp_unslash(get_option('jio_snippet'))),
-            'jio_cf7_submit_option' => esc_html(wp_unslash(get_option('jio_cf7_submit_option', '1'))),
-            'jio_cf7_email_id' => esc_html(wp_unslash(get_option('jio_cf7_email_id'))),
+	        'jio_api_key'           => esc_html( wp_unslash( get_option( 'jio_api_key' ) ) ),
+	        'jio_snippet'           => esc_html( wp_unslash( get_option( 'jio_snippet' ) ) ),
+	        'jio_cf7_submit_option' => esc_html( wp_unslash( get_option( 'jio_cf7_submit_option', '1' ) ) ),
+	        'jio_cf7_email_id'      => esc_html( wp_unslash( get_option( 'jio_cf7_email_id' ) ) ),
+	        'jio_cf7_first_name_id' => esc_html( wp_unslash( get_option( 'jio_cf7_first_name_id' ) ) ),
+	        'jio_cf7_last_name_id'  => esc_html( wp_unslash( get_option( 'jio_cf7_last_name_id' ) ) ),
+	        'jio_cf7_full_name_id'  => esc_html( wp_unslash( get_option( 'jio_cf7_full_name_id' ) ) ),
         );
 
         // Load Settings Form
