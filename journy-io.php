@@ -74,7 +74,6 @@ final class JournyIO
         if ($this->body_open_supported) {
             add_action('wp_body_open', array(&$this, 'frontendBody'), 1);
         }
-        add_action('wp_footer', array(&$this, 'frontendFooter'));
 
         if ($this->IsElementor && $this->IsElementorPro) {
             add_action('elementor_pro/init', function () {
