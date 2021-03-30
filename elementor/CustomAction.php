@@ -143,7 +143,7 @@ final class CustomAction extends Action_Base
         unset(
             $element['journy_email_field'],
             $element['journy_first_name'],
-            $element['journy_last_name'],
+            $element['journy_last_name']
         );
     }
 }
