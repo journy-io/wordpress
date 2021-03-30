@@ -3,7 +3,7 @@ Contributors: journyio
 Tags: marketing, attribution, optimizing, analytics, footer, footer code, footer scripts, footers, google analytics, head, header, header code, header scripts, headers, woocommerce, woocommerce analytics, contact form 7, contact form 7 analaytics
 Requires at least: 3.6
 Tested up to: 5.7
-Requires PHP: 7.3
+Requires PHP: 7.2
 Stable tag: 1.4.5
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
