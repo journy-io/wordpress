@@ -116,7 +116,7 @@ final class CustomAction extends Action_Base {
 
 		$client->addEvent(
 			Event::forUser(
-				'form' . $settings["id"] . '-submit',
+				'form' . $settings["id"] . '_submit',
 				UserIdentified::byEmail( $email )
 			)->withMetadata( $metadata )
 		);

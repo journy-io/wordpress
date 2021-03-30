@@ -85,11 +85,29 @@ final class CF7CustomAction
 			    ] );
 		    }
 
+		    $metedata = [];
+
+		    foreach ( $posted_data as $id => $value ) {
+			    if (
+				    $id === $emailId
+			        || $id === $firstNameId
+				    || $id === $lastNameId
+				    || $id === $fullNameId
+				    || $id === "first_name"
+				    || $id === "last_name"
+				    || $id === "full_name"
+			    ) {
+				    continue;
+			    }
+
+			    $metadata[ $id ] = $value;
+		    }
+
 		    $client->addEvent(
 			    Event::forUser(
-				    'form' . $formId . '-submit',
-				    UserIdentified::byEmail( $posted_data[ $emailId ] )
-			    )->withMetadata( $posted_data )
+				    'form' . $formId . '_submit',
+				    UserIdentified::byEmail( $email )
+			    )->withMetadata( $metedata )
 		    );
 	    }
 
