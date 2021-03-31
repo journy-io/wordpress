@@ -6,6 +6,16 @@ use JournyIO\SDK\UserIdentified;
 
 final class CF7CustomAction
 {
+    private function snake( $value, $delimiter = '_' ) {
+        if ( ! ctype_lower( $value ) ) {
+            $value = preg_replace( '/\s+/u', '', ucwords( $value ) );
+
+            $value = strtolower( preg_replace( '/(.)(?=[A-Z])/u', '$1' . $delimiter, $value ) );
+        }
+
+        return $value;
+    }
+
     public function sendData($wpcf)
     {
 	    if ( ! get_option( 'jio_cf7_submit_option' ) ) {
@@ -88,8 +98,8 @@ final class CF7CustomAction
 				    continue;
 			    }
 
-                $metadata[ $id ] = $value;
-			    $properties[ $id ] = $value;
+                $metadata[ $this->snake($id) ] = $value;
+			    $properties[ $this->snake($id) ] = $value;
 		    }
 
 		    $client->upsertUser( [
