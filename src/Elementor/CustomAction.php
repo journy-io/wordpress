@@ -8,22 +8,23 @@ use JournyIO\SDK\Client;
 use JournyIO\SDK\Event;
 use JournyIO\SDK\UserIdentified;
 
-
 final class ElementorCustomAction extends Action_Base
 {
+    // phpcs:ignore
     public function get_name()
     {
         return "journy.io";
     }
 
+    // phpcs:ignore
     public function get_label()
     {
         return __('journy.io', 'journy-io');
     }
 
-    private function snake( $value, $delimiter = '_' )
+    private function snake($value, $delimiter = '_')
     {
-        if (! ctype_lower($value) ) {
+        if (! ctype_lower($value)) {
             $value = preg_replace('/\s+/u', '', ucwords($value));
 
             $value = strtolower(preg_replace('/(.)(?=[A-Z])/u', '$1' . $delimiter, $value));
@@ -32,7 +33,7 @@ final class ElementorCustomAction extends Action_Base
         return $value;
     }
 
-    public function run( $record, $ajax_handler )
+    public function run($record, $ajax_handler)
     {
         $settings         = $record->get('form_settings');
         $emailSetting     = "email";
@@ -40,19 +41,19 @@ final class ElementorCustomAction extends Action_Base
         $lastNameSetting  = "last_name";
         $fullNameSetting  = "full_name";
 
-        if (!empty($settings['journy_email_field']) ) {
+        if (!empty($settings['journy_email_field'])) {
             $emailSetting = $settings['journy_email_field'];
         }
 
-        if (!empty($settings['journy_first_name']) ) {
+        if (!empty($settings['journy_first_name'])) {
             $firstNameSetting = $settings['journy_first_name'];
         }
 
-        if (!empty($settings['journy_last_name']) ) {
+        if (!empty($settings['journy_last_name'])) {
             $lastNameSetting = $settings['journy_last_name'];
         }
 
-        if (!empty($settings['journy_full_name']) ) {
+        if (!empty($settings['journy_full_name'])) {
             $fullNameSetting = $settings['journy_full_name'];
         }
 
@@ -60,10 +61,10 @@ final class ElementorCustomAction extends Action_Base
 
         $fields = [];
         $email  = "";
-        foreach ( $raw_fields as $id => $field ) {
+        foreach ($raw_fields as $id => $field) {
             $fields[ $id ] = $field['value'];
 
-            if ($field['type'] === 'email' ) {
+            if ($field['type'] === 'email') {
                 $email = $field['value'];
             }
         }
@@ -71,31 +72,31 @@ final class ElementorCustomAction extends Action_Base
         $apiKey = get_option('jio_api_key');
         $client = Client::withDefaults($apiKey);
 
-        if (empty($email) && empty($fields[ $emailSetting ]) ) {
+        if (empty($email) && empty($fields[ $emailSetting ])) {
             return;
         }
 
-        if (!empty($fields[ $emailSetting ]) ) {
+        if (!empty($fields[ $emailSetting ])) {
             $email = $fields[ $emailSetting ];
         }
 
         $properties = [];
 
-        if (!empty($fields[ $firstNameSetting ]) ) {
+        if (!empty($fields[ $firstNameSetting ])) {
             $properties["first_name"] = $fields[ $firstNameSetting ];
         }
 
-        if (!empty($fields[ $lastNameSetting ]) ) {
+        if (!empty($fields[ $lastNameSetting ])) {
             $properties["last_name"] = $fields[ $lastNameSetting ];
         }
 
-        if (!empty($fields[ $fullNameSetting ]) ) {
+        if (!empty($fields[ $fullNameSetting ])) {
             $properties["full_name"] = $fields[ $fullNameSetting ];
         }
 
         $metadata = [];
-        foreach ( $raw_fields as $id => $field ) {
-            if ($id === $emailSetting ) {
+        foreach ($raw_fields as $id => $field) {
+            if ($id === $emailSetting) {
                 continue;
             }
 
@@ -110,7 +111,7 @@ final class ElementorCustomAction extends Action_Base
             ]
         );
 
-        if (isset($_COOKIE["__journey"]) ) {
+        if (isset($_COOKIE["__journey"])) {
             $client->link(
                 [
                 "deviceId" => $_COOKIE["__journey"],
@@ -125,9 +126,9 @@ final class ElementorCustomAction extends Action_Base
                 UserIdentified::byEmail($email)
             )->withMetadata($metadata)
         );
-
     }
 
+    // phpcs:ignore
     public function register_settings_section($widget)
     {
         $widget->start_controls_section(
@@ -179,6 +180,7 @@ final class ElementorCustomAction extends Action_Base
         $widget->end_controls_section();
     }
 
+    // phpcs:ignore
     public function on_export($element)
     {
         unset(

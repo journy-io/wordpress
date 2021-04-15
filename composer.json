@@ -16,8 +16,8 @@
     "phpstan/extension-installer": "^1.1"
   },
   "scripts": {
-    "check-style": "phpcs src --ignore=*/views/*",
-    "fix-style": "phpcbf src --ignore=*/views/*"
+    "check-style": "phpcs src --standard=psr2 --ignore=*/views/*",
+    "fix-style": "phpcbf src --standard=psr2 --ignore=*/views/*"
   },
   "autoload": {
     "psr-4": {
