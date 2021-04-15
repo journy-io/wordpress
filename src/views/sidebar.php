@@ -11,7 +11,7 @@
         </p>
         <p>
             Register for free on <a
-                    href="https://jtm.journy.io/register?utm_source=wordpress&utm_medium=wordpress_plugin_sidebar&utm_campaign=jall&jtm_event=wordpress-site-registration"
+                    href="https://jtm.journy.io/register?utm_source=wordpress&utm_medium=wordpress_plugin_sidebar&utm_campaign=jall&jtm_event=wordpress-site-registration&jtm_domain=system.journy.io"
                     target="_blank">our registration page</a>
         </p>
     </div>
