@@ -1,8 +1,3 @@
-<?php
-/**
- * Notices template
- */
-?>
 <div class="notice notice-success is-dismissible <?php echo $this->plugin->name; ?>-notice-welcome">
     <p>
         <?php printf('Thank you for installing the journy.io plugin'); ?>

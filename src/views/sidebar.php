@@ -1,8 +1,3 @@
-<?php
-/**
- * Information Sidebar
- */
-?>
 <!-- journy.io account -->
 <div class="postbox">
     <h3 class="hndle">

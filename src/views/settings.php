@@ -43,18 +43,18 @@
                             <div class="inside">
                                 <p><strong>
                                         <?php
-                                        if (!$this->IsCF7ed) {
+                                        if (! $this->isCF7ed ) {
                                             echo 'Contact Form 7 NOT detected';
                                         } else
                                         {
-                                        echo 'Contact Form 7 detected: version ' . WPCF7_VERSION . ' installed';
-                                        ?>
+                                            echo 'Contact Form 7 detected: version ' . WPCF7_VERSION . ' installed';
+                                            ?>
                                     </strong>
-                                </p><label><input type="checkbox" id="jio_cf7_submit_option"
+                                </p><input type="checkbox" id="jio_cf7_submit_option"
                                                   name="jio_cf7_submit_option"
-                                                  value="<?php echo( '1' ); ?>" <?php if ( get_option( 'jio_cf7_submit_option' ) === '1' ) {
-			                            echo 'checked';
-		                            } ?> >Track form submission</label>
+                                                  value="<?php echo( '1' ); ?>" <?php if (get_option('jio_cf7_submit_option') === '1' ) {
+                                                        echo 'checked';
+} ?> ><label>Track form submission</label>
                                 <br>
                                 <br>
                                 <label>Email Field ID</label>
@@ -62,7 +62,7 @@
                                 <input type="text" name="jio_cf7_email_id" id="jio_cf7_email_id"
                                        style="font-family:Courier New; margin-top: 5px"
                                        size="50"
-                                       placeholder="Email Field ID" <?php echo 'value="' . esc_html( $this->settings['jio_cf7_email_id'] ) . '"'; ?> >
+                                       placeholder="Email Field ID" <?php echo 'value="' . esc_html($this->settings['jio_cf7_email_id']) . '"'; ?> >
 
                                 <br>
                                 <br>
@@ -71,7 +71,7 @@
                                 <input type="text" name="jio_cf7_first_name_id" id="jio_cf7_first_name_id"
                                        style="font-family:Courier New; margin-top: 5px"
                                        size="50"
-                                       placeholder="First Name Field ID" <?php echo 'value="' . esc_html( $this->settings['jio_cf7_first_name_id'] ) . '"'; ?> >
+                                       placeholder="First Name Field ID" <?php echo 'value="' . esc_html($this->settings['jio_cf7_first_name_id']) . '"'; ?> >
 
                                 <br>
                                 <br>
@@ -80,7 +80,7 @@
                                 <input type="text" name="jio_cf7_last_name_id" id="jio_cf7_last_name_id"
                                        style="font-family:Courier New; margin-top: 5px"
                                        size="50"
-                                       placeholder="Last Name Field ID" <?php echo 'value="' . esc_html( $this->settings['jio_cf7_last_name_id'] ) . '"'; ?> >
+                                       placeholder="Last Name Field ID" <?php echo 'value="' . esc_html($this->settings['jio_cf7_last_name_id']) . '"'; ?> >
 
 
                                 <br>
@@ -90,36 +90,50 @@
                                 <input type="text" name="jio_cf7_full_name_id" id="jio_cf7_full_name_id"
                                        style="font-family:Courier New; margin-top: 5px"
                                        size="50"
-                                       placeholder="Full Name Field ID" <?php echo 'value="' . esc_html( $this->settings['jio_cf7_full_name_id'] ) . '"'; ?> >
+                                       placeholder="Full Name Field ID" <?php echo 'value="' . esc_html($this->settings['jio_cf7_full_name_id']) . '"'; ?> >
 
-	                            <?php
-	                            }
-                                ?>
+                                            <?php
+                                        }
+                                        ?>
                                 <p><strong>
                                         <?php global $elementor;
-                                        if (!$this->IsElementor) {
+                                        if (! $this->isElementor ) {
                                             echo 'Elementor NOT detected';
                                         } else
                                         {
-                                        echo 'Elementor detected: version ' . ELEMENTOR_VERSION . ' installed';
-                                        ?>
+                                            echo 'Elementor detected: version ' . ELEMENTOR_VERSION . ' installed';
+                                            ?>
                                     </strong>
-                                    <?php
-                                    }
-                                    ?>
+                                            <?php
+                                        }
+                                        ?>
                                 </p>
                                 <p><strong>
                                         <?php global $elementor;
-                                        if (!$this->IsElementorPro) {
+                                        if (! $this->isElementorPro ) {
                                             echo 'ElementorPro NOT detected';
                                         } else
                                         {
-                                        echo 'ElementorPro detected: version ' . ELEMENTOR_PRO_VERSION . ' installed';
-                                        ?>
+                                            echo 'ElementorPro detected: version ' . ELEMENTOR_PRO_VERSION . ' installed';
+                                            ?>
                                     </strong>
-                                    <?php
-                                    }
-                                    ?>
+                                            <?php
+                                        }
+                                        ?>
+                                </p>
+
+                                <p><strong>
+                                        <?php
+                                        if (! $this->isMooveGdpr ) {
+                                            echo 'GDPR Cookie Compliance (CCPA, PIPEDA ready) NOT detected';
+                                        } else
+                                        {
+                                            echo 'GDPR Cookie Compliance (CCPA, PIPEDA ready) detected: version ' . MOOVE_GDPR_VERSION . ' installed';
+                                            ?>
+                                    </strong>
+                                            <?php
+                                        }
+                                        ?>
                                 </p>
 
                                 <?php wp_nonce_field($this->plugin->name, $this->plugin->name . '_nonce'); ?>
@@ -137,7 +151,7 @@
 
             <!-- Sidebar -->
             <div id="postbox-container-1" class="postbox-container">
-                <?php require_once($this->plugin->folder . '/views/sidebar.php'); ?>
+                <?php require_once $this->plugin->folder . '/views/sidebar.php'; ?>
             </div>
             <!-- /postbox-container -->
         </div>
