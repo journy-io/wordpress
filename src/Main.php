@@ -18,13 +18,12 @@ final class Main
 
     public function __construct()
     {
-        $this->plugin                           = new stdClass();
-        $this->plugin->name                     = 'journy-io';
-        $this->plugin->displayName              = 'journy.io';
-        $this->plugin->version                  = '2.0';
-        $this->plugin->folder                   = plugin_dir_path(__FILE__);
-        $this->plugin->url                      = plugin_dir_url(__FILE__);
-        $this->plugin->db_welcome_dismissed_key = $this->plugin->name . '_welcome_dismissed_key';
+        $this->name                     = 'journy-io';
+        $this->displayName              = 'journy.io';
+        $this->version                  = '2.0';
+        $this->folder                   = plugin_dir_path(__FILE__);
+        $this->url                      = plugin_dir_url(__FILE__);
+        $this->db_welcome_dismissed_key = $this->name . '_welcome_dismissed_key';
         $this->body_open_supported              = function_exists('wp_body_open')
             && version_compare(get_bloginfo('version'), '5.2', '>=');
 
@@ -42,7 +41,7 @@ final class Main
         add_action('admin_menu', array( &$this, 'adminPanelsAndMetaBoxes' ));
         add_action('admin_notices', array( &$this, 'dashboardNotices' ));
         add_action(
-            'wp_ajax_' . $this->plugin->name . '_dismiss_dashboard_notices',
+            'wp_ajax_' . $this->name . '_dismiss_dashboard_notices',
             array(
             &$this,
             'dismissDashboardNotices'
@@ -104,49 +103,49 @@ final class Main
     {
         global $pagenow;
 
-        if (! get_option($this->plugin->db_welcome_dismissed_key)) {
+        if (! get_option($this->db_welcome_dismissed_key)) {
             if (! ( $pagenow == 'options-general.php' && isset($_GET['page']) && $_GET['page'] == 'journy-io' )) {
                 // Variable is used in /views/dashboard-notices.php
-                $setting_page = admin_url('options-general.php?page=' . $this->plugin->name);
+                $setting_page = admin_url('options-general.php?page=' . $this->name);
 
-                include_once $this->plugin->folder . '/views/dashboard-notices.php';
+                include_once $this->folder . '/views/dashboard-notices.php';
             }
         }
     }
 
     public function dismissDashboardNotices()
     {
-        check_ajax_referer($this->plugin->name . '-nonce', 'nonce');
-        update_option($this->plugin->db_welcome_dismissed_key, 1);
+        check_ajax_referer($this->name . '-nonce', 'nonce');
+        update_option($this->db_welcome_dismissed_key, 1);
         exit;
     }
 
     public function registerSettings()
     {
-        register_setting($this->plugin->name, 'jio_api_key', 'trim');
-        register_setting($this->plugin->name, 'jio_snippet', 'trim');
-        register_setting($this->plugin->name, 'jio_cf7_submit_option', 'boolean');
-        register_setting($this->plugin->name, 'jio_cf7_email_id', [ 'type' => 'trim', 'default' => 'your-email' ]);
+        register_setting($this->name, 'jio_api_key', 'trim');
+        register_setting($this->name, 'jio_snippet', 'trim');
+        register_setting($this->name, 'jio_cf7_submit_option', 'boolean');
+        register_setting($this->name, 'jio_cf7_email_id', [ 'type' => 'trim', 'default' => 'your-email' ]);
         register_setting(
-            $this->plugin->name,
+            $this->name,
             'jio_cf7_first_name_id',
             [
             'type'    => 'trim',
             'default' => 'first_name'
             ]
         );
-        register_setting($this->plugin->name, 'jio_cf7_last_name_id', [ 'type' => 'trim', 'default' => 'last_name' ]);
-        register_setting($this->plugin->name, 'jio_cf7_full_name_id', [ 'type' => 'trim', 'default' => 'your-name' ]);
+        register_setting($this->name, 'jio_cf7_last_name_id', [ 'type' => 'trim', 'default' => 'last_name' ]);
+        register_setting($this->name, 'jio_cf7_full_name_id', [ 'type' => 'trim', 'default' => 'your-name' ]);
     }
 
     public function adminPanelsAndMetaBoxes()
     {
         add_submenu_page(
             'options-general.php',
-            $this->plugin->displayName,
-            $this->plugin->displayName,
+            $this->displayName,
+            $this->displayName,
             'manage_options',
-            $this->plugin->name,
+            $this->name,
             array( &$this, 'adminPanel' )
         );
     }
@@ -173,15 +172,15 @@ final class Main
         'jio_cf7_full_name_id'  => esc_html(wp_unslash(get_option('jio_cf7_full_name_id'))),
         );
 
-        include_once $this->plugin->folder . '/views/settings.php';
+        include_once $this->folder . '/views/settings.php';
     }
 
     private function handleSettingsSubmit()
     {
-        if (! isset($_REQUEST[ $this->plugin->name . '_nonce' ])) {
+        if (! isset($_REQUEST[ $this->name . '_nonce' ])) {
             // Missing nonce
             $this->errorMessage = __('nonce field is missing. Settings NOT saved.', 'journy-io');
-        } elseif (! wp_verify_nonce($_REQUEST[ $this->plugin->name . '_nonce' ], $this->plugin->name)) {
+        } elseif (! wp_verify_nonce($_REQUEST[ $this->name . '_nonce' ], $this->name)) {
             // Invalid nonce
             $this->errorMessage = __('Invalid nonce specified. Settings NOT saved.', 'journy-io');
         } else {
@@ -222,7 +221,7 @@ final class Main
                 update_option('jio_cf7_full_name_id', sanitize_text_field($_REQUEST['jio_cf7_full_name_id']));
             }
 
-            update_option($this->plugin->db_welcome_dismissed_key, 1);
+            update_option($this->db_welcome_dismissed_key, 1);
             $this->message = __('Settings Saved.', 'journy-io');
         }
     }

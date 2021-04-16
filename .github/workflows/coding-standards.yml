@@ -49,3 +49,6 @@ jobs:
 
       - name: "Coding Standard"
         run: "vendor/bin/phpcs --standard=psr2 --ignore=*/views/* src/"
+
+      - name: "PHPStan"
+          run: "vendor/bin/phpstan"

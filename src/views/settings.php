@@ -1,5 +1,5 @@
 <div class="wrap">
-    <h2><?php echo $this->plugin->displayName; ?> &raquo; Settings</h2>
+    <h2><?php echo $this->displayName; ?> &raquo; Settings</h2>
 
     <?php
     if (isset($this->message)) {
@@ -19,7 +19,7 @@
             <!-- Content -->
             <div id="post-body-content">
                 <div id="normal-sortables" class="meta-box-sortables ui-sortable">
-                    <form action="options-general.php?page=<?php echo $this->plugin->name; ?>" method="post">
+                    <form action="options-general.php?page=<?php echo $this->name; ?>" method="post">
                         <div class="postbox">
                             <h3 class="hndle">Insert journy.io tracking information</h3>
 
@@ -29,7 +29,7 @@
                                        size="50"
                                        placeholder="Enter API Key" <?php echo 'value="' . esc_html($this->settings['jio_api_key']) . '"'; ?> />
 
-                                <?php wp_nonce_field($this->plugin->name, $this->plugin->name . '_nonce'); ?>
+                                <?php wp_nonce_field($this->name, $this->name . '_nonce'); ?>
 
 
                                 <input name="submit" type="submit" class="button button-primary"
@@ -136,7 +136,7 @@
                                         ?>
                                 </p>
 
-                                <?php wp_nonce_field($this->plugin->name, $this->plugin->name . '_nonce'); ?>
+                                <?php wp_nonce_field($this->name, $this->name . '_nonce'); ?>
 
                                 <input name="submit" type="submit" name="Submit" class="button button-primary"
                                        value="Save Changes"/>
@@ -151,7 +151,7 @@
 
             <!-- Sidebar -->
             <div id="postbox-container-1" class="postbox-container">
-                <?php require_once $this->plugin->folder . '/views/sidebar.php'; ?>
+                <?php require_once $this->folder . '/views/sidebar.php'; ?>
             </div>
             <!-- /postbox-container -->
         </div>
