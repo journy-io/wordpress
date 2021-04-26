@@ -9,7 +9,6 @@
 # DO NOT EXCLUDE /vendor
 
 # Files
-constants.php
 .babelrc
 .distignore
 .eslintignore

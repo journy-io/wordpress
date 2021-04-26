@@ -18,8 +18,7 @@ jobs:
       matrix:
         dependencies:
           - "locked"
-        php-version:
-          - "7.4"
+        php-version: [7.3, 7.4, 8.0]
         operating-system:
           - "ubuntu-latest"
 
@@ -49,6 +48,3 @@ jobs:
 
       - name: "Coding Standard"
         run: "vendor/bin/phpcs --standard=psr2 --ignore=*/views/* src/"
-
-      - name: "PHPStan"
-        run: "vendor/bin/phpstan"
