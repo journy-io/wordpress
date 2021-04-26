@@ -11,7 +11,18 @@
   ],
   "require-dev": {
     "squizlabs/php_codesniffer": "^3.5",
-    "wp-coding-standards/wpcs": "^2.3"
+    "wp-coding-standards/wpcs": "^2.3",
+    "szepeviktor/phpstan-wordpress": "^0.7.5",
+    "phpstan/extension-installer": "^1.1"
+  },
+  "scripts": {
+    "check-style": "phpcs src --standard=psr2 --ignore=*/views/*",
+    "fix-style": "phpcbf src --standard=psr2 --ignore=*/views/*"
+  },
+  "autoload": {
+    "psr-4": {
+      "JournyIO\\WordPress\\": "./src"
+    }
   },
   "require": {
     "journy-io/sdk": "^3.0",
